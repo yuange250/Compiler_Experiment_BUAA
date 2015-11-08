@@ -27,6 +27,9 @@
     <ClInclude Include="globals.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="globals_const.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -35,7 +38,19 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="procedue_anlysis.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="statement_analysis.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="input.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="declare_analysis.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
