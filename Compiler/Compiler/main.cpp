@@ -9,7 +9,7 @@
 #include <fstream>
 using namespace std;
 //Global Value
-string symbols[] = {"nul","ident","uinteger","integer","char","string","plus","minus","times","slash","oddsym","eql","neq","lss","leq","gtr","geq","lparen","rparen","comma","semicolon","period","becomes","beginsym","endsym","ifsym","thensym","whilesym","dosym","forsym","downsym","tosym","callsym","constsym","varsym","procsym","readsym","writesym","funcsym"};
+string symbols[] = {"nul","ident","uinteger","integer","char","string","plus","minus","times","slash","oddsym","eql","neq","lss","leq","gtr","geq","lparen","rparen","comma","semicolon","colon","period","becomes","beginsym","endsym","ifsym","thensym","whilesym","dosym","forsym","downsym","tosym","callsym","constsym","varsym","procsym","readsym","writesym","funcsym"};
 string identtype[] = {"constant","variable","procedure","function"};
 char ch=' ';
 string sym;//last symbol read
@@ -21,8 +21,8 @@ int err = 0;//err_nums
 
 string a;
 char line[line_max] = {0};
-string reser_word[] = {"beigin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function"};
-string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym"};//word symbols
+string reser_word[] = {"beigin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","char"};
+string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","intsym","charsym"};//word symbols
 map<char,string> ssym;//+ - * / ( ) < >
 struct table{
 	string name;
@@ -46,6 +46,7 @@ void init_ssym(){
 	ssym['<'] = "lss";         
 	ssym['>'] = "gtr";
 	ssym[';'] = "semicolon";
+	ssym[':'] = "colon";
 }
 string declbegsys[] = { "constsym", "varsym", "procsym" };
 string statbegsys[] = { "beginsym", "callsym", "ifsym", "whilesym" };

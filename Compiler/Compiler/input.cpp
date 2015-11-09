@@ -126,7 +126,7 @@ void getsym()
 			getch();
 		}
 		else
-			sym = "nul";//这儿要注意回来看一下,好了，不用看了
+			sym = "colon";//这儿要注意回来看一下,好了，不用看了
 	}
 	else if (ch == '<')
 	{

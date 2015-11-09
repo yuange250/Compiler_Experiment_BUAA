@@ -21,11 +21,13 @@ void const_declaration()
 		    if (sym == "becomes")
 			error(1);
 			getsym();
-			if (sym == "number")
+			if (sym == "number" || sym == "unumber" || sym == "char" || sym == "string")
 			{
 				enter("constant");
 				getsym();
 			}
+			else
+				error(2);
 		}
 		else
 			error(3);
@@ -35,7 +37,10 @@ void const_declaration()
 }
 void variable_declaration()
 {
+	if (sym == "ident")
+	{
 
+	}
 }
 void function_declaration()
 {
