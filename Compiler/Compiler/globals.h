@@ -8,6 +8,7 @@ using namespace std;
 extern string symbols[];
 extern char ch;
 extern string sym;//last symbol read
+extern string nextsym;//yes for look forward
 extern string iden;//last identifier read
 extern int number;//last number read
 extern int cc;//charactor count

@@ -33,6 +33,8 @@ void ugetch()
 }
 void getsym()
 {
+	//需要向前看啊，我觉得最好能提前预知下一个是什么。。。。
+	sym = nextsym;
 	while (ch == ' ')
 	{
 		getch();
@@ -62,11 +64,11 @@ void getsym()
 		}
 		if (i != rwnu)
 		{
-			sym = "ident";
+			nextsym = "ident";
 		}
 		else
 		{
-			sym = wsym[i];
+			nextsym = wsym[i];
 		}
 	}
 	else if (ch == '-' || ch == '+')
@@ -86,7 +88,7 @@ void getsym()
 				getch();
 			}
 //			if (point_flag==0)
-			sym = "integer";
+			nextsym = "integer";
 			if (c_temp == '-')
 			{
 				number = -number;
@@ -96,7 +98,7 @@ void getsym()
 		}
 		else
 		{
-			sym = ssym[c_temp];
+			nextsym = ssym[c_temp];
 		}
 	}
 	else if (ch >= '0'&&ch <= '9')
@@ -113,7 +115,7 @@ void getsym()
 			getch();
 		}
 		//			if (point_flag==0)
-		sym = "uinteger";
+		nextsym = "uinteger";
 //		else
 //			sym = "ureal";
 	}
@@ -122,38 +124,38 @@ void getsym()
 		getch();
 		if (ch == '=')
 		{
-			sym = "becomes";
+			nextsym = "becomes";
 			getch();
 		}
 		else
-			sym = "colon";//这儿要注意回来看一下,好了，不用看了
+			nextsym = "colon";//这儿要注意回来看一下,好了，不用看了
 	}
 	else if (ch == '<')
 	{
 		getch();
 		if (ch == '=')
 		{
-			sym = "leq";
+			nextsym = "leq";
 			getch();
 		}
 		else if (ch == '>')
 		{
-			sym = "neq";
+			nextsym = "neq";
 			getch();
 		}
 		else
-			sym = "lss";
+			nextsym = "lss";
 	}
 	else if (ch == '>')
 	{
 		getch();
 		if (ch == '=')
 		{
-			sym = "geq";
+			nextsym = "geq";
 			getch();
 		}
 		else
-			sym = "gtr";
+			nextsym = "gtr";
 	}
 	else if (ch=='\'')
 	{
@@ -167,18 +169,18 @@ void getsym()
 			if (ch == '\'')
 			{
 				a.append(1, '\0');
-				sym = "char";
+				nextsym = "char";
 				getch();
 			}
 			else
 			{
-				sym = "nul";
+				nextsym = "nul";
 				error(1);
 			}
 		}
 		else
 		{
-			sym = "nul";
+			nextsym = "nul";
 			error(1);
 		}
 	}
@@ -202,18 +204,20 @@ void getsym()
 		a.append(1,'\0');
 		if (ch == '\"')
 		{
-			sym = "string";
+			nextsym = "string";
 			getch();
 		}
 		else
 		{
 			error(1);
-			sym = "nul";
+			nextsym = "nul";
 		}
 	}
 	else
 	{
-		sym= ssym[ch];
+		nextsym= ssym[ch];
 		getch();
 	}
+	if (sym == "")
+		getsym();
 }

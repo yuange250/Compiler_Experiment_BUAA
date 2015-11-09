@@ -13,6 +13,7 @@ string symbols[] = {"nul","ident","uinteger","integer","char","string","plus","m
 string identtype[] = {"constant","variable","procedure","function"};
 char ch=' ';
 string sym;//last symbol read
+string nextsym="";
 string iden;//last identifier read
 int number;//last number read
 int cc=0;//charactor count

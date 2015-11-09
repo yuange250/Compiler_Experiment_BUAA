@@ -39,9 +39,27 @@ void variable_declaration()
 {
 	if (sym == "ident")
 	{
-
+		getsym();
 	}
+	else
+		error(99);
+	while (sym == "comma")
+	{
+		getsym();
+		if (sym == "ident")
+		{
+			getsym();
+		}
+	}
+	if (sym == "colon")
+		getsym();
+	else
+		error(99);
+	if (sym == "intsym" || sym == "charsym")
+		getsym();//此处应该填表的，将类型填进去。
+
 }
 void function_declaration()
 {
+
 }
