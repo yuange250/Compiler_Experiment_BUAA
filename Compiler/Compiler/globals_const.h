@@ -1,5 +1,5 @@
 #include <string>
-const int rwnu = 16;//reserve word number
+const int rwnu = 20;//reserve word number
 const int txmax = 100;//identifier table max num
 const int nmax = 14;//max digit in numbers
 const int al = 10;//max char num of a identifier

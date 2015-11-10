@@ -13,7 +13,7 @@ string symbols[] = {"nul","ident","uinteger","integer","char","string","plus","m
 string identtype[] = {"constant","variable","procedure","function"};
 char ch=' ';
 string sym;//last symbol read
-string nextsym="";
+//string nextsym="";
 string iden;//last identifier read
 int number;//last number read
 int cc=0;//charactor count
@@ -22,8 +22,8 @@ int err = 0;//err_nums
 
 string a;
 char line[line_max] = {0};
-string reser_word[] = {"beigin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","char"};
-string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","intsym","charsym"};//word symbols
+string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array"};
+string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integer","uinteger","charsym","of","array"};//word symbols
 map<char,string> ssym;//+ - * / ( ) < >
 struct table{
 	string name;
@@ -53,11 +53,19 @@ string declbegsys[] = { "constsym", "varsym", "procsym" };
 string statbegsys[] = { "beginsym", "callsym", "ifsym", "whilesym" };
 string facbegsys[] = { "ident", "uinteger","lparen" };
 FILE *IN, *OUT;
+void getsym();
+void block();
 int main(int argc, char**argv)
 {
+	IN = fopen("in.pas","r");
 	init_ssym();
-	printf("%d", sizeof(facbegsys)/sizeof(string));
-	getchar();
+	//printf("%d", sizeof(facbegsys)/sizeof(string));
+
+	getsym();
+	block();
+//	sym = "const";
+//	printf("%d", sym == reser_word[2]);
+//	cout << sym == reser_word[2];
 	return 0;
 }
 

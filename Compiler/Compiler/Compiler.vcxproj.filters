@@ -30,15 +30,15 @@
     <ClInclude Include="globals_const.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="procedue_anlysis.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="statement_analysis.cpp">
@@ -51,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="declare_analysis.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="block_anlysis.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

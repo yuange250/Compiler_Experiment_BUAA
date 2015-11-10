@@ -18,6 +18,7 @@ void getch()
 		c_temp = 0;
 		while (c_temp != '\n' && c_temp != '.')
 		{
+			c_temp = fgetc(IN);
 			line[ll++] = c_temp;
 		}
 		line[ll++] = ' ';//加了一个缓冲，用于回退
@@ -34,7 +35,7 @@ void ugetch()
 void getsym()
 {
 	//需要向前看啊，我觉得最好能提前预知下一个是什么。。。。
-	sym = nextsym;
+	//sym = nextsym;
 	while (ch == ' ')
 	{
 		getch();
@@ -52,7 +53,7 @@ void getsym()
 			a.append(1,ch);
 			getch();
 		}
-		a.append(1,'\0');
+	//	a.append(1,'\0');
 		iden = a;
 		i = 0;
 		for (i = 0; i < rwnu; i++)
@@ -62,44 +63,18 @@ void getsym()
 				break;
 			}
 		}
-		if (i != rwnu)
+		if (i == rwnu)
 		{
-			nextsym = "ident";
+			sym = "ident";
 		}
 		else
 		{
-			nextsym = wsym[i];
+			sym = wsym[i];
 		}
 	}
 	else if (ch == '-' || ch == '+')
 	{
-		char c_temp = ch;
-		number = 0;
-		getch();
-		if (ch >= '0'&&ch <= '9')
-		{
-			int i = 0;
-//			int point_flag = 0;
-			while (ch >= '0'&&ch <= '9')
-			{
-//				if (ch == '.')
-//					point_flag = 1;
-				number = 10 * number + (ch - '0');
-				getch();
-			}
-//			if (point_flag==0)
-			nextsym = "integer";
-			if (c_temp == '-')
-			{
-				number = -number;
-			}
-//			else
-//				sym = "real";
-		}
-		else
-		{
-			nextsym = ssym[c_temp];
-		}
+		sym = ssym[ch];
 	}
 	else if (ch >= '0'&&ch <= '9')
 	{
@@ -115,7 +90,7 @@ void getsym()
 			getch();
 		}
 		//			if (point_flag==0)
-		nextsym = "uinteger";
+		sym = "uinteger";
 //		else
 //			sym = "ureal";
 	}
@@ -124,38 +99,38 @@ void getsym()
 		getch();
 		if (ch == '=')
 		{
-			nextsym = "becomes";
+			sym = "becomes";
 			getch();
 		}
 		else
-			nextsym = "colon";//这儿要注意回来看一下,好了，不用看了
+			sym = "colon";//这儿要注意回来看一下,好了，不用看了
 	}
 	else if (ch == '<')
 	{
 		getch();
 		if (ch == '=')
 		{
-			nextsym = "leq";
+			sym = "leq";
 			getch();
 		}
 		else if (ch == '>')
 		{
-			nextsym = "neq";
+			sym = "neq";
 			getch();
 		}
 		else
-			nextsym = "lss";
+			sym = "lss";
 	}
 	else if (ch == '>')
 	{
 		getch();
 		if (ch == '=')
 		{
-			nextsym = "geq";
+			sym = "geq";
 			getch();
 		}
 		else
-			nextsym = "gtr";
+			sym = "gtr";
 	}
 	else if (ch=='\'')
 	{
@@ -169,18 +144,18 @@ void getsym()
 			if (ch == '\'')
 			{
 				a.append(1, '\0');
-				nextsym = "char";
+				sym = "charsym";
 				getch();
 			}
 			else
 			{
-				nextsym = "nul";
+				sym = "nul";
 				error(1);
 			}
 		}
 		else
 		{
-			nextsym = "nul";
+			sym = "nul";
 			error(1);
 		}
 	}
@@ -204,18 +179,18 @@ void getsym()
 		a.append(1,'\0');
 		if (ch == '\"')
 		{
-			nextsym = "string";
+			sym = "string";
 			getch();
 		}
 		else
 		{
 			error(1);
-			nextsym = "nul";
+			sym = "nul";
 		}
 	}
 	else
 	{
-		nextsym= ssym[ch];
+		sym= ssym[ch];
 		getch();
 	}
 	if (sym == "")

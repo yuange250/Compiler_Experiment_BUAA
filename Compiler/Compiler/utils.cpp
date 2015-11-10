@@ -17,6 +17,7 @@ void error(int error_no)
 {
 	//print out 
 	err++;
+	printf("error occur!\n");
 }
 
 void test(string s1[], string s2[], int error_no)

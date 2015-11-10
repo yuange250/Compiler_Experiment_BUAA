@@ -5,6 +5,7 @@ void test(string s1[], string s2[], int error_no);
 bool ifin(string symbol, string symbols[]);
 void getsym();
 void expression();
+void multi_statement();
 void function_symbols(){
 	
 	if (sym == "(")
@@ -13,6 +14,7 @@ void function_symbols(){
 	}
 }
 void factor(){
+	printf("now in factor\n");
 	int i = 0;
 //	test(facbegsys,fsys,24);
 	while (ifin(sym,facbegsys))
@@ -25,7 +27,7 @@ void factor(){
 			getsym();
 			
 		}
-		else if (sym == "unumber")
+		else if (sym == "uinteger")
 		{
 			int num = number;
 			if (num > amax)
@@ -55,6 +57,7 @@ void factor(){
 }
 void term()
 {
+	printf("now in term\n");
 	factor();
 	while (sym == "times" || sym == "slash")
 	{
@@ -64,6 +67,11 @@ void term()
 }
 void expression()
 {
+	if (sym == "ident")
+		getsym();
+	else
+		error(99);
+	printf("now in expression\n");
 	if (sym=="plus"||sym=="minus")
 	{
 		getsym();
@@ -77,6 +85,7 @@ void expression()
 }
 void condition()
 {
+	printf("now in condition\n");
 	expression();
 	getsym();
 	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq" };
@@ -90,9 +99,11 @@ void condition()
 }
 void statement()
 {
+	printf("now in statement\n");
 	if (sym == "ident")
 	{
 		//判断是不是函数。若是的话，也没什么，卧槽函数部分好傻逼啊，难道是弱类型的语言吗，可以随便赋值。
+		printf("now in assign_statement\n");
 		getsym();
 		if (sym == "becomes")
 			getsym();
@@ -102,6 +113,7 @@ void statement()
 	}
 	else if (sym == "callsym")//这儿文法是有问题的呀！！！！！！！！调用过程不需要call的呀！！！！
 	{
+		printf("now in call_statement\n");
 		getsym();
 		if (sym == "ident")
 		{
@@ -110,6 +122,7 @@ void statement()
 	}
 	else if (sym == "ifsym")
 	{
+		printf("now in if_statement\n");
 		getsym();
 		condition();
 		if (sym == "thensym")
@@ -122,6 +135,7 @@ void statement()
 	}
 	else if (sym == "whilesym")
 	{
+		printf("now in whilestatement\n");
 		getsym();
 		condition();
 		if (sym == "dosym")
@@ -132,17 +146,12 @@ void statement()
 	}
 	else if (sym == "beginsym")
 	{
-		getsym();
-		statement();
-		while (sym == "semicolon")
-			statement();
-		if (sym == "endsym")
-			getsym();
-		else
-			error(17);
+		printf("now in begin_statement\n");
+		multi_statement();
 	}
 	else if (sym == "readsym")
 	{
+		printf("now in readstatement\n");
 		getsym();
 		if (sym == "lparen")
 		{
@@ -165,6 +174,7 @@ void statement()
 	}
 	else if (sym == "writesym")
 	{
+		printf("now in writestatement\n");
 		getsym();
 		if (sym == "lparen")
 		{
@@ -181,6 +191,7 @@ void statement()
 	}
 	else if (sym == "forsym")
 	{
+		printf("now in forstatement\n");
 		getsym();
 		if (sym == "ident")
 		{
@@ -204,3 +215,14 @@ void statement()
 			error(40);
 	}
 }
+void multi_statement()
+{
+	getsym();
+	statement();
+	while (sym == "semicolon")
+		statement();
+	if (sym == "endsym")
+		getsym();
+	else
+		error(17);
+} 
