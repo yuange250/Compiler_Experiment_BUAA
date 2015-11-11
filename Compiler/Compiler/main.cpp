@@ -23,7 +23,7 @@ int err = 0;//err_nums
 string a;
 char line[line_max] = {0};
 string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array"};
-string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integer","uinteger","charsym","of","array"};//word symbols
+string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integer","uinteger","charsym","of","arraysym"};//word symbols
 map<char,string> ssym;//+ - * / ( ) < >
 struct table{
 	string name;
@@ -48,6 +48,8 @@ void init_ssym(){
 	ssym['>'] = "gtr";
 	ssym[';'] = "semicolon";
 	ssym[':'] = "colon";
+	ssym['['] = "lbracket";
+	ssym[']'] = "rbracket";
 }
 string declbegsys[] = { "constsym", "varsym", "procsym" };
 string statbegsys[] = { "beginsym", "callsym", "ifsym", "whilesym" };

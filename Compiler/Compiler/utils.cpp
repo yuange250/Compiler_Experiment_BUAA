@@ -4,7 +4,7 @@ void getsym();
 bool ifin(string symbol, string symbols[])
 {
 	int i = 0;
-	while (i < sizeof(symbols) / sizeof(string))
+	while (symbols[i]!="")
 	{
 		if (symbol == symbols[i])
 			return true;

@@ -75,12 +75,13 @@ void getsym()
 	else if (ch == '-' || ch == '+')
 	{
 		sym = ssym[ch];
+		getch();
 	}
 	else if (ch >= '0'&&ch <= '9')
 	{
 		int i = 0;
 //		int point_flag = 0;
-		number = 0;
+		number = ch-'0';
 		while (ch >= '0'&&ch <= '9')
 		{
 //			if (ch == '.')

@@ -72,8 +72,34 @@ void variable_declaration()
 			getsym();
 		else
 			error(99);
-		if (sym == "integer" || sym == "charsym" || sym == "arraysym")
+		if (sym == "integer" || sym == "charsym")
 			getsym();//此处应该填表的，将类型填进去。
+		else if (sym == "arraysym")
+		{
+			getsym();
+			if (sym == "lbracket")
+				getsym();
+			else
+				error(99);//缺少左中括号
+			if (sym != "uinteger")
+				error(99);//数组下标错误
+			else
+				getsym();
+			if (sym != "rbracket")
+				error(99);//缺少右中括号。
+			else
+				getsym();
+			if (sym != "of")
+				error(99);//缺少of
+			else
+				getsym();
+			if (sym == "charsym" || sym == "uinteger")
+			{
+				getsym();
+			}
+			else
+				error(99);//应该为基本类型
+		}
 		if (sym != "semicolon")
 			error(99);
 		else

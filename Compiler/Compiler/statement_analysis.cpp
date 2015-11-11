@@ -68,7 +68,9 @@ void term()
 void expression()
 {
 	if (sym == "ident")
-		getsym();
+	{
+		//	getsym();
+	}
 	else
 		error(99);
 	printf("now in expression\n");
@@ -116,9 +118,9 @@ void statement()
 		printf("now in call_statement\n");
 		getsym();
 		if (sym == "ident")
-		{
-
-		}
+			getsym();
+		else
+			error(99);//call
 	}
 	else if (sym == "ifsym")
 	{
@@ -220,7 +222,10 @@ void multi_statement()
 	getsym();
 	statement();
 	while (sym == "semicolon")
+	{
+		getsym();
 		statement();
+	}
 	if (sym == "endsym")
 		getsym();
 	else
