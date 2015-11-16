@@ -16,6 +16,10 @@ bool ifin(string symbol, string symbols[])
 void error(int error_no)
 {
 	//print out 
+	if (error_no == 1)
+		printf("illegal charactor!\n");
+	else if (error_no == 2)
+		printf("illegal end of the file\n");
 	err++;
 	printf("error occur!\n");
 }

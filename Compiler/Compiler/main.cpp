@@ -22,8 +22,8 @@ int err = 0;//err_nums
 
 string a;
 char line[line_max] = {0};
-string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array"};
-string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integer","uinteger","charsym","of","arraysym"};//word symbols
+string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array","string"};
+string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integer","uinteger","charsym","of","arraysym","string"};//word symbols
 map<char,string> ssym;//+ - * / ( ) < >
 struct table{
 	string name;
@@ -62,9 +62,10 @@ int main(int argc, char**argv)
 	IN = fopen("in.pas","r");
 	init_ssym();
 	//printf("%d", sizeof(facbegsys)/sizeof(string));
-
-	getsym();
-	block();
+	while (sym != "comma")
+	{
+		getsym();
+	}
 //	sym = "const";
 //	printf("%d", sym == reser_word[2]);
 //	cout << sym == reser_word[2];

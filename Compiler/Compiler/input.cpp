@@ -10,6 +10,7 @@ void getch()
 		char c_temp = 0;
 		if ((c_temp=fgetc(IN))==EOF)
 		{
+			error(2);
 			fclose(IN);
 		}
 		ungetc(c_temp,IN);
@@ -44,16 +45,16 @@ void getsym()
 	{
 		int i = 0;
 		a = "";
-		while ((ch >= 'a'&&ch <= 'z')||(ch>='0'&&ch<='9'))
+		while ((ch >= 'a'&&ch <= 'z') || (ch >= '0'&&ch <= '9'))
 		{
 			if (i > al)
 			{
 
 			}
-			a.append(1,ch);
+			a.append(1, ch);
 			getch();
 		}
-	//	a.append(1,'\0');
+		//	a.append(1,'\0');
 		iden = a;
 		i = 0;
 		for (i = 0; i < rwnu; i++)
@@ -71,11 +72,7 @@ void getsym()
 		{
 			sym = wsym[i];
 		}
-	}
-	else if (ch == '-' || ch == '+')
-	{
-		sym = ssym[ch];
-		getch();
+		printf("%s,%s\n",sym,iden);
 	}
 	else if (ch >= '0'&&ch <= '9')
 	{
@@ -92,6 +89,7 @@ void getsym()
 		}
 		//			if (point_flag==0)
 		sym = "uinteger";
+		printf("%s,%d\n",sym,number);
 //		else
 //			sym = "ureal";
 	}
@@ -101,10 +99,14 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "becomes";
+			printf("%s,:=\n",sym);
 			getch();
 		}
 		else
-			sym = "colon";//这儿要注意回来看一下,好了，不用看了
+		{
+			sym = "colon";//这儿要注意回来看一下,好了，不用看
+			printf("%s,=\n",sym);
+		}
 	}
 	else if (ch == '<')
 	{
@@ -112,15 +114,20 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "leq";
+			printf("%s,<=\n",sym);
 			getch();
 		}
 		else if (ch == '>')
 		{
 			sym = "neq";
+			printf("%s,<>\n",sym);
 			getch();
 		}
 		else
+		{
 			sym = "lss";
+			printf("%s,<\n",sym);
+		}
 	}
 	else if (ch == '>')
 	{
@@ -128,10 +135,14 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "geq";
+			printf("%s,>=\n", sym);
 			getch();
 		}
 		else
+		{
 			sym = "gtr";
+			printf("%s,>\n", sym);
+		}
 	}
 	else if (ch=='\'')
 	{
@@ -146,19 +157,24 @@ void getsym()
 			{
 				a.append(1, '\0');
 				sym = "charsym";
+				iden = a;
 				getch();
 			}
 			else
 			{
 				sym = "nul";
+				iden = "";
 				error(1);
 			}
 		}
 		else
 		{
 			sym = "nul";
+			iden = "";
 			error(1);
 		}
+		
+		printf("%s,%s\n", sym,iden);
 	}
 	else if (ch == '\"')
 	{
@@ -167,33 +183,26 @@ void getsym()
 		a = "";
 		while (ch != '\"')
 		{
-			if (ch)//这儿应该是合法字符，卧槽，合法是个什么定义！
+			if (ch==32||ch==33||(ch>=35&&ch<=126))//这儿应该是合法字符，卧槽，合法是个什么定义！
 			{
 				a.append(1,ch);
 			}
 			else
 			{
 				error(1);
-				break;
 			}
-		}
-		a.append(1,'\0');
-		if (ch == '\"')
-		{
-			sym = "string";
 			getch();
 		}
-		else
-		{
-			error(1);
-			sym = "nul";
-		}
+		a.append(1,'\0');
+		iden = a;
+		sym = "string";
+		printf("%s,%s\n", sym, iden);
+		getch();
 	}
 	else
 	{
 		sym= ssym[ch];
+		printf("%s,%c\n", sym, ch);
 		getch();
 	}
-	if (sym == "")
-		getsym();
 }
