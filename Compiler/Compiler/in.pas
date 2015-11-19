@@ -1,10 +1,53 @@
-const a=10;
-var b,c:integer;
-procedure add(var a,v:integer;var d:char);
+const space='a';
+
+var n,ntemp,meanless,i:integer;
+    a:array[10] of integer;
+    ch:char;
+procedure input;
 begin
-	a:=a+1;
-	d:=a*v+b*c;
+   for n:=1 to 10
+   do
+      begin
+      read(ntemp);
+      a[n]:=ntemp;
+      end;
+end;
+function qsort(l,h:integer):integer;
+var
+ i,j,t,m:integer;
+ begin
+ i:=l; j:=h;
+ m:=a[(i+j) / 2];
+ do
+ begin
+ i:=i-1;
+
+ do
+   i:=i+1
+ while a[i]<m;
+
+ j:=j+1;
+ do
+   j:=j-1
+ while m<a[j];
+
+ if i<=j then
+  begin
+   t:=a[i]; a[i]:=a[j]; a[j]:=t;
+   i:=i+1; j:=j-1
+  end;
+  end
+  while i<=j;
+ if i<h then t:=qsort(i,h);
+ if j>l then t:=qsort(l,j);
+ qsort:=1
 end;
 begin
-	b=0; 
+    input;
+    meanless:=qsort(1,10)*5;
+    for i:=1 to 10
+    do
+           write(a[i]);
+   write("haha!");
+   read(i)
 end.

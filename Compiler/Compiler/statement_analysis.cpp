@@ -1,16 +1,46 @@
 #include "stdafx.h"
 #include "globals.h"
 void error(int error_no);
+int position(string id);
 void test(string s1[], string s2[], int error_no);
 bool ifin(string symbol, string symbols[]);
 void getsym();
 void expression();
 void multi_statement();
-void function_symbols(){
+void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 	
-	if (sym == "(")
+	if (sym == "lparen")
 	{
-		int paramnum;//参数个数。
+		int nums = 0;
+		do{
+			getsym();
+			expression();
+			nums++;
+		} while (sym == "comma");
+
+		if (sym != "rparen")
+		{
+			error(8);
+		}
+		if (nums != id_table[posi].param_list->param_num)
+		{
+			error(9);
+		}
+		//int paramnum;//参数个数。
+	}
+	
+}
+void array_ident()
+{
+	if (sym != "lbracket")
+	{
+		error(10);
+	}
+	getsym();
+	expression();
+	if (sym != "rbracket")
+	{
+		error(11);
 	}
 }
 void factor(){
@@ -21,9 +51,27 @@ void factor(){
 	{
 		if (sym == "ident")
 		{
+			int posi = position(iden);
 //			int i = position();词法部分。
 			//此时需要在表中查找，是否是函数。
 			//if是函数。。。。。。进入函数参数列表部分。
+			if (posi == 0)
+			{
+				error(5);
+			}
+			else
+			{
+				if (id_table[posi].obj == "function")
+				{
+					getsym();
+					function_params(posi);
+				}
+				else if (id_table[posi].type == "array")
+				{
+					getsym();//是否对数组越界进行检查，，，，
+					array_ident();
+				}
+			}
 			getsym();
 			
 		}
@@ -65,14 +113,20 @@ void term()
 		factor();
 	}
 }
+
 void expression()
 {
-	if (sym == "ident")
+/*	if (sym == "ident")
 	{
 		//	getsym();
+		int pos = position(iden);
+		if (pos == 0)
+		{
+			error(5);
+		}
 	}
 	else
-		error(99);
+		error(99);*/
 	printf("now in expression\n");
 	if (sym=="plus"||sym=="minus")
 	{
@@ -89,8 +143,7 @@ void condition()
 {
 	printf("now in condition\n");
 	expression();
-	getsym();
-	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq" };
+	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq","" };
 	if (ifin(sym,compare_symbols))
 	{
 		getsym();
@@ -105,22 +158,43 @@ void statement()
 	if (sym == "ident")
 	{
 		//判断是不是函数。若是的话，也没什么，卧槽函数部分好傻逼啊，难道是弱类型的语言吗，可以随便赋值。
-		printf("now in assign_statement\n");
-		getsym();
-		if (sym == "becomes")
+		int pos = position(iden);
+
+		if (pos == 0)
+		{
+			error(5);
+		}
+		if (id_table[pos].obj == "procedure")
+		{
+			printf("now in call_statement\n");
 			getsym();
-		else
-			error(13);
-		expression();
-	}
-	else if (sym == "callsym")//这儿文法是有问题的呀！！！！！！！！调用过程不需要call的呀！！！！
-	{
-		printf("now in call_statement\n");
-		getsym();
-		if (sym == "ident")
+			function_params(pos);
+			if (sym!="semicolon")
 			getsym();
+		}
 		else
-			error(99);//call
+		{
+			if (id_table[pos].type == "array")
+			{
+				getsym();//是否对数组越界进行检查，，，，
+				array_ident();
+			}
+			else if (id_table[pos].type=="integersym"||id_table[pos].type=="charsym")
+			{
+			}
+			else
+			{
+				error(6);//此处需要报警
+			}
+			printf("now in assign_statement\n");
+			getsym();
+			if (sym == "becomes")
+				getsym();
+			else
+				error(13);
+			expression();
+		}
+		
 	}
 	else if (sym == "ifsym")
 	{
@@ -135,16 +209,16 @@ void statement()
 		if (sym == "else")
 			statement();
 	}
-	else if (sym == "whilesym")
+	else if (sym == "dosym")
 	{
-		printf("now in whilestatement\n");
+		printf("now in dowhilestatement\n");
 		getsym();
-		condition();
-		if (sym == "dosym")
+		statement();
+		if (sym == "whilesym")
 			getsym();
 		else
 			error(18);
-		statement();
+		condition();
 	}
 	else if (sym == "beginsym")
 	{
@@ -161,7 +235,12 @@ void statement()
 				getsym();
 				if (sym == "ident")
 				{
+					int pos = position(iden);
 
+					if (pos == 0)
+					{
+						error(5);
+					}
 				}
 				else
 					error(4);
@@ -180,10 +259,18 @@ void statement()
 		getsym();
 		if (sym == "lparen")
 		{
-			do{
+			getsym();
+			if (sym == "string")
+			{
 				getsym();
-				expression();
-			} while (sym == "comma");
+				if (sym == "comma")
+				{
+					getsym();
+					expression();
+				}
+			}
+			else
+			    expression();
 			if (sym != "rparen")
 				error(22);
 			getsym();
@@ -197,7 +284,12 @@ void statement()
 		getsym();
 		if (sym == "ident")
 		{
-			getsym();	
+			getsym();
+			int pos = position(iden);
+			if (pos == 0)
+			{
+				error(5);
+			}
 		}
 		else
 			error(4);
@@ -208,13 +300,22 @@ void statement()
 		}
 		else
 			error(40);
-		if (sym == "downto" || sym == "to")
+		if (sym == "downtosym" || sym == "tosym")
 		{
 			getsym();
 			expression();
 		}
 		else
 			error(40);
+		if (sym == "dosym")
+		{
+			getsym();
+			statement();
+		}
+		else
+		{
+			error(13);
+		}
 	}
 }
 void multi_statement()
@@ -230,4 +331,5 @@ void multi_statement()
 		getsym();
 	else
 		error(17);
+
 } 

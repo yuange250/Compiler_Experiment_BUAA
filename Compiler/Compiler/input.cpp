@@ -17,10 +17,11 @@ void getch()
 		ll = 0;
 		cc = 0;
 		c_temp = 0;
-		while (c_temp != '\n' && c_temp != '.')
+		while (c_temp != '\n')
 		{
 			c_temp = fgetc(IN);
-			line[ll++] = c_temp;
+			if (c_temp!='\n')
+				line[ll++] = c_temp;
 		}
 		line[ll++] = ' ';//加了一个缓冲，用于回退
 	}
@@ -37,15 +38,15 @@ void getsym()
 {
 	//需要向前看啊，我觉得最好能提前预知下一个是什么。。。。
 	//sym = nextsym;
-	while (ch == ' ')
+	while (ch == ' '||ch=='\t')
 	{
 		getch();
 	}
-	if (ch >= 'a'&&ch <= 'z')
+	if (ch >= 'a'&&ch <= 'z' || (ch >= 'A'&&ch <= 'Z'))
 	{
 		int i = 0;
 		a = "";
-		while ((ch >= 'a'&&ch <= 'z') || (ch >= '0'&&ch <= '9'))
+		while ((ch >= 'a'&&ch <= 'z') || (ch >= '0'&&ch <= '9') || (ch >= 'A'&&ch <= 'Z'))
 		{
 			if (i > al)
 			{
@@ -72,13 +73,14 @@ void getsym()
 		{
 			sym = wsym[i];
 		}
-		printf("%s,%s\n",sym,iden);
+		cout<<sym+","<<iden<<endl;
 	}
 	else if (ch >= '0'&&ch <= '9')
 	{
 		int i = 0;
 //		int point_flag = 0;
 		number = ch-'0';
+		getch();
 		while (ch >= '0'&&ch <= '9')
 		{
 //			if (ch == '.')
@@ -89,7 +91,7 @@ void getsym()
 		}
 		//			if (point_flag==0)
 		sym = "uinteger";
-		printf("%s,%d\n",sym,number);
+		cout << sym + "," << number << endl;
 //		else
 //			sym = "ureal";
 	}
@@ -99,13 +101,13 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "becomes";
-			printf("%s,:=\n",sym);
+			cout << sym + "," << ":=" << endl;
 			getch();
 		}
 		else
 		{
 			sym = "colon";//这儿要注意回来看一下,好了，不用看
-			printf("%s,=\n",sym);
+			cout << sym + "," << ":"<< endl;
 		}
 	}
 	else if (ch == '<')
@@ -114,19 +116,19 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "leq";
-			printf("%s,<=\n",sym);
+			cout << sym + "," << "<=" << endl;
 			getch();
 		}
 		else if (ch == '>')
 		{
 			sym = "neq";
-			printf("%s,<>\n",sym);
+			cout << sym + "," << "<>" << endl;
 			getch();
 		}
 		else
 		{
 			sym = "lss";
-			printf("%s,<\n",sym);
+			cout << sym + "," << "<" << endl;
 		}
 	}
 	else if (ch == '>')
@@ -135,13 +137,13 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "geq";
-			printf("%s,>=\n", sym);
+			cout << sym + "," << ">=" << endl;
 			getch();
 		}
 		else
 		{
 			sym = "gtr";
-			printf("%s,>\n", sym);
+			cout << sym + "," << ">" << endl;
 		}
 	}
 	else if (ch=='\'')
@@ -149,22 +151,26 @@ void getsym()
 		getch();
 		int i = 0;
 		a = "";
-		if ((ch >= 'a'&&ch <= 'z') || (ch >= '0'&&ch <= '9'))
+		if ((ch >= 'a'&&ch <= 'z') || (ch >= '0'&&ch <= '9')||(ch>='A'&&ch<='Z'))
 		{
 			a.append(1, ch);
 			getch();
 			if (ch == '\'')
 			{
 				a.append(1, '\0');
-				sym = "charsym";
+				sym = "char";
 				iden = a;
-				getch();
 			}
 			else
 			{
 				sym = "nul";
 				iden = "";
 				error(1);
+				while (ch != '\'')
+				{
+					getch();
+				}
+
 			}
 		}
 		else
@@ -172,9 +178,13 @@ void getsym()
 			sym = "nul";
 			iden = "";
 			error(1);
+			while (ch != '\'')
+			{
+				getch();
+			}
 		}
-		
-		printf("%s,%s\n", sym,iden);
+		getch();
+		cout << sym + "," << iden << endl;
 	}
 	else if (ch == '\"')
 	{
@@ -189,20 +199,25 @@ void getsym()
 			}
 			else
 			{
-				error(1);
+				error(4);
 			}
 			getch();
 		}
 		a.append(1,'\0');
 		iden = a;
 		sym = "string";
-		printf("%s,%s\n", sym, iden);
+		cout << sym + "," << iden << endl;
 		getch();
 	}
 	else
 	{
 		sym= ssym[ch];
-		printf("%s,%c\n", sym, ch);
+		if (sym == "")
+		{
+			error(3);//illegal charactor
+		}
+		else
+		  cout << sym + "," << ch << endl;
 		getch();
 	}
 }

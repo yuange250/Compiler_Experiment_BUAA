@@ -20,19 +20,37 @@ int cc=0;//charactor count
 int ll=0;//linelen
 int err = 0;//err_nums
 
+int level = 0;//level呀
+
+
 string a;
 char line[line_max] = {0};
-string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array","string"};
-string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integer","uinteger","charsym","of","arraysym","string"};//word symbols
+string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array"};
+string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integersym","uintegersym","charsym","ofsym","arraysym"};//word symbols
 map<char,string> ssym;//+ - * / ( ) < >
+int tx = 0;//table index
+struct array_info{
+	int size;
+	string type;
+};
+struct params{
+	int param_num;
+	string param_names[param_max];
+	string types[param_max];
+};
 struct table{
 	string name;
-	string kind;
-	int value;
-	int level;
-	int addr;
+	string obj;
+	string type;
+	bool able;//符号的使能键,好吧，现在我发现这玩意没什么鸡巴用
+	int lev;
+	int adr;//地址,这个就叼啦
+	int value;//其实一般是没什么用的，毕竟最后弄成汇编
+	struct params * param_list;
+	struct array_info * arrayinfo;
 };
-int tx = 0;//table index
+params PARAMS;
+array_info ARRAY_INFO;
 table id_table[txmax];
 void init_ssym(){
 	ssym['+'] = "plus";        
@@ -53,22 +71,31 @@ void init_ssym(){
 }
 string declbegsys[] = { "constsym", "varsym", "procsym" };
 string statbegsys[] = { "beginsym", "callsym", "ifsym", "whilesym" };
-string facbegsys[] = { "ident", "uinteger","lparen" };
+string facbegsys[] = { "ident", "uinteger","lparen","" };
 FILE *IN, *OUT;
 void getsym();
 void block();
+bool ifin(string symbol, string symbols[]);
 int main(int argc, char**argv)
 {
 	IN = fopen("in.pas","r");
 	init_ssym();
 	//printf("%d", sizeof(facbegsys)/sizeof(string));
-	while (sym != "comma")
+	/*while (sym != "period")
 	{
 		getsym();
-	}
+	}*/
 //	sym = "const";
 //	printf("%d", sym == reser_word[2]);
 //	cout << sym == reser_word[2];
+	getsym();
+	block();
+/*	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq" };
+	if (ifin("lss", compare_symbols))
+	{
+		printf("soga");
+	}*/
+	getchar();
 	return 0;
 }
 
