@@ -1,22 +1,23 @@
-﻿生成启动时间为 2015/11/18 22:57:25。
+﻿生成启动时间为 2015/11/21 17:47:57。
      1>项目“C:\Users\Chen\Documents\GitHub\Compiler_Experiment_BUAA\Compiler\Compiler\Compiler.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\Compiler.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\Compiler.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt declare_analysis.cpp input.cpp main.cpp block_anlysis.cpp statement_analysis.cpp utils.cpp
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\Compiler.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt block_anlysis.cpp declare_analysis.cpp generate.cpp input.cpp main.cpp statement_analysis.cpp utils.cpp
+         block_anlysis.cpp
+     1>c:\users\chen\documents\github\compiler_experiment_buaa\compiler\compiler\globals.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
          declare_analysis.cpp
+     1>c:\users\chen\documents\github\compiler_experiment_buaa\compiler\compiler\globals.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         generate.cpp
      1>c:\users\chen\documents\github\compiler_experiment_buaa\compiler\compiler\globals.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
          input.cpp
      1>c:\users\chen\documents\github\compiler_experiment_buaa\compiler\compiler\globals.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
          main.cpp
-         block_anlysis.cpp
-     1>c:\users\chen\documents\github\compiler_experiment_buaa\compiler\compiler\globals.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
          statement_analysis.cpp
      1>c:\users\chen\documents\github\compiler_experiment_buaa\compiler\compiler\globals.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
          utils.cpp
      1>c:\users\chen\documents\github\compiler_experiment_buaa\compiler\compiler\globals.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
        Link:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Chen\Documents\GitHub\Compiler_Experiment_BUAA\Compiler\Release\Compiler.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Chen\Documents\GitHub\Compiler_Experiment_BUAA\Compiler\Release\Compiler.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Chen\Documents\GitHub\Compiler_Experiment_BUAA\Compiler\Release\Compiler.lib" /MACHINE:X86 /SAFESEH Release\declare_analysis.obj
+         Release\generate.obj
          Release\input.obj
          Release\main.obj
          Release\block_anlysis.obj
@@ -30,4 +31,4 @@
 
 生成成功。
 
-已用时间 00:00:03.55
+已用时间 00:00:04.39

@@ -6,6 +6,7 @@ void variable_declaration();
 void function_declaration();
 void procedure_declaration();
 void multi_statement();
+void generate(string opr, string src1, string src2, string des);
 void clear(int level)
 {
 	while (id_table[tx].lev == level)
@@ -26,6 +27,10 @@ void clear(int level)
 }
 void block()
 {
+	int codes_index_temp = code_index;
+	int sp_addr_temp = sp_addr_temp;
+	sp_piece_top
+	generate("SUB", "sp_addr", "", "sp_addr");
 	level++;
 	printf("now in block\n");
 	if (sym == "constsym")

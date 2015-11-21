@@ -48,3 +48,14 @@ extern array_info ARRAY_INFO;
 extern table id_table[];
 extern int tx;//table index
 extern int level;//levelѽ
+extern int sp_addr;
+extern int sp_piece_top;
+struct mid_code{
+	string opr;
+	string src1;
+	string src2;
+	string des;
+};
+extern mid_code MID_CODE;
+extern mid_code codes[codes_max];
+extern int code_index;

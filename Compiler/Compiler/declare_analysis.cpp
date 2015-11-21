@@ -6,6 +6,7 @@ bool ifin(string symbol, string symbols[]);
 void getsym();
 void block();
 int check_ifexist(string id);
+void generate(string opr, string src1, string src2, string des);
 void enter(string type)//废弃的矿坑
 {
 	tx++;
@@ -16,6 +17,7 @@ void enter(string type)//废弃的矿坑
 }
 void enterconst()//向符号表中登陆常数，很简单，同时将值存进去
 {
+
 	tx++;
 	id_table[tx].name = iden;
 	if (sym == "uinteger")
@@ -28,6 +30,8 @@ void enterconst()//向符号表中登陆常数，很简单，同时将值存进去
 		id_table[tx].type = "charsym";
 		id_table[tx].value = iden[0];
 	}
+	id_table[tx].adr = sp_addr-sp_piece_top;//存相对于栈帧顶的位移
+
 	id_table[tx].lev = level;
 	id_table[tx].obj = "const";
 	id_table[tx].able = true;
@@ -269,7 +273,7 @@ void function_declaration()
 		{
 			error(12);
 		}
-
+		generate("LABEL","","",iden);
 
 		enterfunction();
 		getsym();
@@ -327,7 +331,7 @@ void procedure_declaration()
 		{
 			error(12);
 		}
-
+		generate("LABEL", "", "", iden);
 
 		enterprocedure();
 		getsym();

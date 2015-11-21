@@ -21,8 +21,9 @@ int ll=0;//linelen
 int err = 0;//err_nums
 
 int level = 0;//level呀
-
-
+int sp_addr = 0;//整个栈空间的地址交给这位
+int sp_piece_top = 0;
+int code_index = 0;
 string a;
 char line[line_max] = {0};
 string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array"};
@@ -49,8 +50,16 @@ struct table{
 	struct params * param_list;
 	struct array_info * arrayinfo;
 };
+struct mid_code{
+	string opr;
+	string src1;
+	string src2;
+	string des;
+};
+mid_code MID_CODE;
 params PARAMS;
 array_info ARRAY_INFO;
+mid_code codes[codes_max];
 table id_table[txmax];
 void init_ssym(){
 	ssym['+'] = "plus";        
@@ -89,6 +98,7 @@ int main(int argc, char**argv)
 //	printf("%d", sym == reser_word[2]);
 //	cout << sym == reser_word[2];
 	getsym();
+
 	block();
 /*	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq" };
 	if (ifin("lss", compare_symbols))
