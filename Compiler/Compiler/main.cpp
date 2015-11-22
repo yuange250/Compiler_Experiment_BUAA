@@ -1,4 +1,4 @@
-// Compiler.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+ï»¿// Compiler.cpp : å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 //
 #include "stdafx.h"
 #include <iostream>
@@ -9,26 +9,36 @@
 #include <fstream>
 using namespace std;
 //Global Value
-string symbols[] = {"nul","ident","uinteger","integer","char","string","plus","minus","times","slash","oddsym","eql","neq","lss","leq","gtr","geq","lparen","rparen","comma","semicolon","colon","period","becomes","beginsym","endsym","ifsym","thensym","whilesym","dosym","forsym","downsym","tosym","callsym","constsym","varsym","procsym","readsym","writesym","funcsym"};
-string identtype[] = {"constant","variable","procedure","function"};
-char ch=' ';
+string symbols[] = { "nul", "ident", "uinteger", "integer", "char", "string", "plus", "minus", "times", "slash", "oddsym", "eql", "neq", "lss", "leq", "gtr", "geq", "lparen", "rparen", "comma", "semicolon", "colon", "period", "becomes", "beginsym", "endsym", "ifsym", "thensym", "whilesym", "dosym", "forsym", "downsym", "tosym", "callsym", "constsym", "varsym", "procsym", "readsym", "writesym", "funcsym" };
+string identtype[] = { "constant", "variable", "procedure", "function" };
+char ch = ' ';
 string sym;//last symbol read
 //string nextsym="";
 string iden;//last identifier read
 int number;//last number read
-int cc=0;//charactor count
-int ll=0;//linelen
+int cc = 0;//charactor count
+int ll = 0;//linelen
 int err = 0;//err_nums
 
+<<<<<<< HEAD
+int level = 0;//levelå‘€
+int sp_addr = 0;//æ•´ä¸ªæ ˆç©ºé—´çš„åœ°å€äº¤ç»™è¿™ä½
+int sp_piece_top = 0;
+int code_index = 0;
+int temp_var_num = 0;
+int label_num = 0;//æ ‡ç­¾å‘½åï¼Œè¿™ä¸ªåº”è¯¥æ•´ä¸ªç¨‹åºå”¯ä¸€ã€‚
+
+=======
 int level = 0;//levelÑ½
 int sp_addr = 0;//Õû¸öÕ»¿Õ¼äµÄµØÖ·½»¸øÕâÎ»
 int sp_piece_top = 0;
 int code_index = 0;
+>>>>>>> origin/master
 string a;
-char line[line_max] = {0};
-string reser_word[] = {"begin","call","const","do","end","if","odd","procedure","read","then","var","while","write","for","down","to","function","integer","uinteger","char","of","array"};
-string wsym[] = { "beginsym","callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym","whilesym" ,"writesym","forsym","downsym","tosym","funcsym","integersym","uintegersym","charsym","ofsym","arraysym"};//word symbols
-map<char,string> ssym;//+ - * / ( ) < >
+char line[line_max] = { 0 };
+string reser_word[] = { "begin", "call", "const", "do", "end", "if", "odd", "procedure", "read", "then", "var", "while", "write", "for", "down", "to", "function", "integer", "uinteger", "char", "of", "array" };
+string wsym[] = { "beginsym", "callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym", "whilesym", "writesym", "forsym", "downsym", "tosym", "funcsym", "integersym", "uintegersym", "charsym", "ofsym", "arraysym" };//word symbols
+map<char, string> ssym;//+ - * / ( ) < >
 int tx = 0;//table index
 struct array_info{
 	int size;
@@ -43,10 +53,10 @@ struct table{
 	string name;
 	string obj;
 	string type;
-	bool able;//·ûºÅµÄÊ¹ÄÜ¼ü,ºÃ°É£¬ÏÖÔÚÎÒ·¢ÏÖÕâÍæÒâÃ»Ê²Ã´¼¦°ÍÓÃ
+	bool able;//ç¬¦å·çš„ä½¿èƒ½é”®,å¥½å§ï¼Œç°åœ¨æˆ‘å‘ç°è¿™ç©æ„æ²¡ä»€ä¹ˆé¸¡å·´ç”¨
 	int lev;
-	int adr;//µØÖ·,Õâ¸ö¾ÍµğÀ²
-	int value;//ÆäÊµÒ»°ãÊÇÃ»Ê²Ã´ÓÃµÄ£¬±Ï¾¹×îºóÅª³É»ã±à
+	int adr;//åœ°å€,è¿™ä¸ªå°±å¼å•¦
+	int value;//å…¶å®ä¸€èˆ¬æ˜¯æ²¡ä»€ä¹ˆç”¨çš„ï¼Œæ¯•ç«Ÿæœ€åå¼„æˆæ±‡ç¼–
 	struct params * param_list;
 	struct array_info * arrayinfo;
 };
@@ -62,49 +72,52 @@ array_info ARRAY_INFO;
 mid_code codes[codes_max];
 table id_table[txmax];
 void init_ssym(){
-	ssym['+'] = "plus";        
+	ssym['+'] = "plus";
 	ssym['-'] = "minus";
-	ssym['*'] = "times";       
+	ssym['*'] = "times";
 	ssym['/'] = "slash";
-	ssym['('] = "lparen";  
+	ssym['('] = "lparen";
 	ssym[')'] = "rparen";
-	ssym['='] = "eql";         
+	ssym['='] = "eql";
 	ssym[','] = "comma";
 	ssym['.'] = "period";
-	ssym['<'] = "lss";         
+	ssym['<'] = "lss";
 	ssym['>'] = "gtr";
 	ssym[';'] = "semicolon";
 	ssym[':'] = "colon";
 	ssym['['] = "lbracket";
 	ssym[']'] = "rbracket";
 }
-string declbegsys[] = { "constsym", "varsym", "procsym" };
-string statbegsys[] = { "beginsym", "callsym", "ifsym", "whilesym" };
-string facbegsys[] = { "ident", "uinteger","lparen","" };
+string declbegsys[] = { "constsym", "varsym", "procsym","" };
+string statbegsys[] = { "beginsym", "callsym", "ifsym", "whilesym","" };
+string facbegsys[] = { "ident", "uinteger", "lparen", "" };
 FILE *IN, *OUT;
 void getsym();
 void block();
 bool ifin(string symbol, string symbols[]);
+void listcode();
 int main(int argc, char**argv)
 {
-	IN = fopen("in.pas","r");
+	IN = fopen("in.pas", "r");
+//	OUT = fopen("mid_code.txt","w");
 	init_ssym();
 	//printf("%d", sizeof(facbegsys)/sizeof(string));
 	/*while (sym != "period")
 	{
-		getsym();
+	getsym();
 	}*/
-//	sym = "const";
-//	printf("%d", sym == reser_word[2]);
-//	cout << sym == reser_word[2];
+	//	sym = "const";
+	//	printf("%d", sym == reser_word[2]);
+	//	cout << sym == reser_word[2];
 	getsym();
 
 	block();
-/*	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq" };
+	/*	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq" };
 	if (ifin("lss", compare_symbols))
 	{
-		printf("soga");
+	printf("soga");
 	}*/
+	listcode();
 	getchar();
 	return 0;
 }

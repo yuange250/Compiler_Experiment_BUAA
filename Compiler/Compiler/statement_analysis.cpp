@@ -1,63 +1,71 @@
+ï»¿//line348 æ‰“å°stringéœ€è¦ç»§ç»­ç»†æƒ³ï¼Œå¯èƒ½éœ€è¦æ”¾åˆ°.dataä¸­ï¼
 #include "stdafx.h"
 #include "globals.h"
 void error(int error_no);
 int position(string id);
-void test(string s1[], string s2[], int error_no);
-bool ifin(string symbol, string symbols[]);
+void test(string *s1, string *s2, int error_no);
+int ifin(string symbol, string *symbols);
 void getsym();
-void expression();
+void expression(string &result);
 void multi_statement();
-void function_params(int posi){//Õâ¸öÒ²ÊÇ·ÏÆúµÄ¿ó¿Ó,ºÃ°É£¬Õâ²»ÊÇ
-	
+string generate_temp_var();
+void generate(string opr, string src1, string src2, string des);
+string generate_label();
+void function_params(int posi){//è¿™ä¸ªä¹Ÿæ˜¯åºŸå¼ƒçš„çŸ¿å‘,å¥½å§ï¼Œè¿™ä¸æ˜¯
+	string result;
 	if (sym == "lparen")
 	{
 		int nums = 0;
 		do{
 			getsym();
-			expression();
+			expression(result);
 			nums++;
 		} while (sym == "comma");
 
 		if (sym != "rparen")
 		{
-			error(8);
+			error(3);
 		}
 		if (nums != id_table[posi].param_list->param_num)
 		{
-			error(9);
+			error(21);
 		}
-		//int paramnum;//²ÎÊý¸öÊý¡£
+		//int paramnum;//å‚æ•°ä¸ªæ•°ã€‚
 	}
-	
+
 }
-void array_ident()
+void array_ident(string &result)
 {
+
 	if (sym != "lbracket")
 	{
 		error(10);
 	}
 	getsym();
-	expression();
+	expression(result);
 	if (sym != "rbracket")
 	{
 		error(11);
 	}
 }
-void factor(){
+void factor(string &result){
 	printf("now in factor\n");
 	int i = 0;
-//	test(facbegsys,fsys,24);
-	while (ifin(sym,facbegsys))
+	//	test(facbegsys,fsys,24);
+	//string correctsymbols[] = { "ident", "ifsym", "dosym", "beginsym", "readsym", "writesym", "forsym", "" };
+	string continuesymbols[] = { "semicolon", "endsym", "times", "plus", "slash", "minus", "eql", "neq", "lss", "leq", "gtr", "geq", "thensym","tosym","downtosym","rparen","rbracket","dosym","whilesym","comma","" };
+	test(facbegsys, continuesymbols, 36);
+	while (ifin(sym, facbegsys))
 	{
 		if (sym == "ident")
 		{
 			int posi = position(iden);
-//			int i = position();´Ê·¨²¿·Ö¡£
-			//´ËÊ±ÐèÒªÔÚ±íÖÐ²éÕÒ£¬ÊÇ·ñÊÇº¯Êý¡£
-			//ifÊÇº¯Êý¡£¡£¡£¡£¡£¡£½øÈëº¯Êý²ÎÊýÁÐ±í²¿·Ö¡£
+			//			int i = position();è¯æ³•éƒ¨åˆ†ã€‚
+			//æ­¤æ—¶éœ€è¦åœ¨è¡¨ä¸­æŸ¥æ‰¾ï¼Œæ˜¯å¦æ˜¯å‡½æ•°ã€‚
+			//ifæ˜¯å‡½æ•°ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚è¿›å…¥å‡½æ•°å‚æ•°åˆ—è¡¨éƒ¨åˆ†ã€‚
 			if (posi == 0)
 			{
-				error(5);
+				error(0);
 			}
 			else
 			{
@@ -68,157 +76,250 @@ void factor(){
 				}
 				else if (id_table[posi].type == "array")
 				{
-					getsym();//ÊÇ·ñ¶ÔÊý×éÔ½½ç½øÐÐ¼ì²é£¬£¬£¬£¬
-					array_ident();
+					string src1;
+					string src2;
+					string des;
+					src1 = id_table[posi].name;
+					getsym();//æ˜¯å¦å¯¹æ•°ç»„è¶Šç•Œè¿›è¡Œæ£€æŸ¥ï¼Œï¼Œï¼Œï¼Œ
+					array_ident(src2);
+					des = generate_temp_var();
+					generate("LOAD",src1,src2,des);
+					result = des;
+				}
+				else
+				{
+					result = iden;
 				}
 			}
 			getsym();
-			
 		}
 		else if (sym == "uinteger")
 		{
 			int num = number;
 			if (num > amax)
 			{
-				error(11);
+				error(15);
 			}
 			getsym();
+			stringstream ss;
+			ss << number;
+			result = ss.str();
 		}
 		else if (sym == "lparen")
 		{
 			getsym();
-/*			int length_temp = sizeof(fsys) / sizeof(string);	
+			/*			int length_temp = sizeof(fsys) / sizeof(string);
 			string fsys_temp[sizeof(fsys)/sizeof(string)+1];
 			memcpy(fsys_temp, fsys, length_temp);
 			fsys_temp[length_temp] = "rparen";
-*/			expression();
+			*/			expression(result);
 			if (sym == "rparen")
 			{
 				getsym();
 			}
 			else
 			{
-				error(22);
+				error(3);
 			}
 		}
+		test(continuesymbols, facbegsys, 41);
 	}
 }
-void term()
+void term(string &result)
 {
 	printf("now in term\n");
-	factor();
+	string src1;
+	string src2;
+	string des;
+	string opr;
+	factor(src1);
+	des = src1;
 	while (sym == "times" || sym == "slash")
 	{
+		if (sym == "times")
+			opr = "MUL";
+		else
+			opr = "DIV";
+		des = generate_temp_var();
 		getsym();
-		factor();
+		factor(src2);
+		generate(opr, src1, src2, des);
+		src1 = des;
 	}
+	result = des;
 }
 
-void expression()
+void expression(string &result)
 {
-/*	if (sym == "ident")
+	/*	if (sym == "ident")
 	{
-		//	getsym();
-		int pos = position(iden);
-		if (pos == 0)
-		{
-			error(5);
-		}
+	//	getsym();
+	int pos = position(iden);
+	if (pos == 0)
+	{
+	error(5);
+	}
 	}
 	else
-		error(99);*/
+	error(99);*/
+	string src1;
+	string src2;
+	string des;
+	string opr;
+	bool symbol_flag = false;
 	printf("now in expression\n");
-	if (sym=="plus"||sym=="minus")
+	if (sym == "plus" || sym == "minus")
 	{
+		if (sym == "minus")
+			symbol_flag = true;
 		getsym();
 	}
-	term();
+
+	term(src1);
+	if (symbol_flag == true)
+	{
+		des = generate_temp_var();
+		generate("OPP", src1, "", des);
+		src1 = des;
+	}
+	des = src1;
 	while (sym == "plus" || sym == "minus")
 	{
+		if (sym == "plus")
+			opr = "ADD";
+		else
+			opr = "SUB";
+		des = generate_temp_var();
 		getsym();
-		term();
+		term(src2);
+		generate(opr, src1, src2, des);
+		src1 = des;
 	}
+	result = des;
 }
 void condition()
 {
 	printf("now in condition\n");
-	expression();
-	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq","" };
-	if (ifin(sym,compare_symbols))
+	int i;
+	string src1;
+	string src2;
+	string des;
+	string opr;
+	expression(src1);
+	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq", "" };
+	string oprs[] = { "JNE", "JEQ", "JGE", "JGR", "JLE", "JLS" };
+	if ((i = ifin(sym, compare_symbols)) != 0)
 	{
+		opr = oprs[i-1];
 		getsym();
-		expression();
+		expression(src2);
 	}
 	else
-		error(20);
+		error(22);
+	generate(opr, src1, src2, "");
 }
 void statement()
 {
+	string correctsymbols[] = { "ident", "ifsym", "dosym","beginsym","readsym","writesym","forsym",""};
+	string continuesymbols[] = { "semicolon","endsym","" };
+	test(correctsymbols, continuesymbols, 39);
 	printf("now in statement\n");
 	if (sym == "ident")
 	{
-		//ÅÐ¶ÏÊÇ²»ÊÇº¯Êý¡£ÈôÊÇµÄ»°£¬Ò²Ã»Ê²Ã´£¬ÎÔ²Ûº¯Êý²¿·ÖºÃÉµ±Æ°¡£¬ÄÑµÀÊÇÈõÀàÐÍµÄÓïÑÔÂð£¬¿ÉÒÔËæ±ã¸³Öµ¡£
+		string src1;
+		string src2;
+		string des;
+		string opr;
+		//åˆ¤æ–­æ˜¯ä¸æ˜¯å‡½æ•°ã€‚è‹¥æ˜¯çš„è¯ï¼Œä¹Ÿæ²¡ä»€ä¹ˆï¼Œå§æ§½å‡½æ•°éƒ¨åˆ†å¥½å‚»é€¼å•Šï¼Œéš¾é“æ˜¯å¼±ç±»åž‹çš„è¯­è¨€å—ï¼Œå¯ä»¥éšä¾¿èµ‹å€¼ã€‚
 		int pos = position(iden);
 
 		if (pos == 0)
 		{
-			error(5);
+			error(0);
 		}
 		if (id_table[pos].obj == "procedure")
 		{
+			des = id_table[pos].name;
 			printf("now in call_statement\n");
 			getsym();
 			function_params(pos);
-			if (sym!="semicolon")
-			getsym();
+			generate("JMP","","",des);
+			if (sym != "semicolon")
+				getsym();
 		}
 		else
 		{
+			
 			if (id_table[pos].type == "array")
 			{
-				getsym();//ÊÇ·ñ¶ÔÊý×éÔ½½ç½øÐÐ¼ì²é£¬£¬£¬£¬
-				array_ident();
+				src1 = id_table[pos].name;
+				getsym();//æ˜¯å¦å¯¹æ•°ç»„è¶Šç•Œè¿›è¡Œæ£€æŸ¥ï¼Œï¼Œï¼Œï¼Œ
+				array_ident(src2);
 			}
-			else if (id_table[pos].type=="integersym"||id_table[pos].type=="charsym")
+			else if (id_table[pos].type == "integersym" || id_table[pos].type == "charsym")
 			{
+				des = id_table[pos].name;
 			}
 			else
 			{
-				error(6);//´Ë´¦ÐèÒª±¨¾¯
+				error(12);//æ­¤å¤„éœ€è¦æŠ¥è­¦
 			}
 			printf("now in assign_statement\n");
 			getsym();
 			if (sym == "becomes")
 				getsym();
 			else
-				error(13);
-			expression();
+				error(24);
+			
+			if (id_table[pos].type == "array")
+			{
+				expression(des);
+				generate("STORE",src1,src2,des);
+			}
+			else if (id_table[pos].type == "integersym" || id_table[pos].type == "charsym")
+			{
+				expression(src1);
+				generate("ASSIGN",src1,"",des);
+			}
 		}
-		
+
 	}
 	else if (sym == "ifsym")
 	{
 		printf("now in if_statement\n");
 		getsym();
+		int code_index_temp = code_index;//è¿™å„¿éœ€è¦å›žå¡«è·³è½¬ç¬¦å·ã€‚
 		condition();
 		if (sym == "thensym")
 			getsym();
 		else
-			error(16);
+			error(25);
 		statement();
+		int code_index_temp2 = code_index;
+		generate("JMP", "", "", "");
+		string label = generate_label();
+		generate("LABEL", "", "", label);
+		codes[code_index_temp].des = label;
 		if (sym == "else")
 			statement();
+		string label2 = generate_label();
+		generate("LABEL","","",label2);
+		codes[code_index_temp2].des = label2;
 	}
 	else if (sym == "dosym")
 	{
 		printf("now in dowhilestatement\n");
+		string label = generate_label();
+		generate("LABEL", "", "", label);
 		getsym();
 		statement();
 		if (sym == "whilesym")
 			getsym();
 		else
-			error(18);
+			error(26);
+		int code_index_temp = code_index;
 		condition();
+		codes[code_index_temp].des = label;
 	}
 	else if (sym == "beginsym")
 	{
@@ -239,74 +340,92 @@ void statement()
 
 					if (pos == 0)
 					{
-						error(5);
+						error(0);
 					}
+
+					generate("READ","","",iden);
 				}
 				else
-					error(4);
+					error(2);
 				getsym();
 			} while (sym == "comma");
 		}
 		else
-			error(40);
+			error(8);
 		if (sym != "rparen")
-			error(22);
+			error(3);
 		getsym();
 	}
 	else if (sym == "writesym")
 	{
 		printf("now in writestatement\n");
 		getsym();
+		string des;
 		if (sym == "lparen")
 		{
 			getsym();
-			if (sym == "string")
+			if (sym == "string")//æ„Ÿè§‰stringéœ€è¦è¿›è¡Œç‰¹æ®Šå¤„ç†å•Šï¼ï¼ï¼ï¼ï¼ï¼ï¼è¿™å„¿éœ€è¦å›žæ¥å†æƒ³ï¼
 			{
+
 				getsym();
 				if (sym == "comma")
 				{
 					getsym();
-					expression();
+					expression(des);
 				}
 			}
 			else
-			    expression();
+				expression(des);
+			generate("WRITE","","",des);
 			if (sym != "rparen")
-				error(22);
+				error(3);
 			getsym();
 		}
 		else
-			error(40);
+			error(8);
 	}
 	else if (sym == "forsym")
 	{
 		printf("now in forstatement\n");
 		getsym();
+		string src1;
+		string src2;
+		string des;
+		string opr;
 		if (sym == "ident")
 		{
 			getsym();
 			int pos = position(iden);
 			if (pos == 0)
 			{
-				error(5);
+				error(0);
 			}
+			des = iden;
 		}
 		else
-			error(4);
+			error(2);
 		if (sym == "becomes")
 		{
 			getsym();
-			expression();
+			expression(src1);
 		}
 		else
-			error(40);
+			error(24);
+		generate("ASSIGN", src1, "", des);
+		string label = generate_label();
+		generate("LABEL", "", "", label);
 		if (sym == "downtosym" || sym == "tosym")
 		{
+			if (sym == "downtosym")
+				opr = "SUB";
+			else
+				opr = "ADD";
 			getsym();
-			expression();
+			expression(src2);
 		}
 		else
-			error(40);
+			error(27);
+
 		if (sym == "dosym")
 		{
 			getsym();
@@ -314,9 +433,14 @@ void statement()
 		}
 		else
 		{
-			error(13);
+			error(28);
 		}
+		generate(opr,des,"1",des);
+		generate("JNE",des,src2,label);
 	}
+	string correctsymbols2[] = { "semicolon", "endsym", "whilesym","" };
+	string continuesymbols2[] = { "" };
+	test(correctsymbols2, continuesymbols2, 38);
 }
 void multi_statement()
 {
@@ -330,6 +454,6 @@ void multi_statement()
 	if (sym == "endsym")
 		getsym();
 	else
-		error(17);
-
-} 
+		error(29);
+	
+}

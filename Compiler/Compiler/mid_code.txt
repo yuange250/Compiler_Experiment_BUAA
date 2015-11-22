@@ -1,0 +1,63 @@
+ASSIGN 1  n
+LABEL   Label0
+READ   ntemp
+STORE a n ntemp
+ADD n 1 n
+JNE n 10 Label0
+ASSIGN l  i
+ASSIGN h  j
+ADD i j T0
+DIV T0 2 T1
+LOAD a T1 T2
+ASSIGN T2  m
+LABEL   Label1
+SUB i 1 T3
+ASSIGN T3  i
+LABEL   Label2
+ADD i 1 T4
+ASSIGN T4  i
+LOAD a i Label2
+JGE T5 m 
+ADD j 1 T6
+ASSIGN T6  j
+LABEL   Label3
+SUB j 1 T7
+ASSIGN T7  j
+LOAD a j Label3
+JGE m T8 
+JGR i j Label4
+LOAD a i T9
+ASSIGN T9  t
+LOAD a j T10
+STORE a i T10
+STORE a j t
+ADD i 1 T11
+ASSIGN T11  i
+SUB j 1 T12
+ASSIGN T12  j
+JMP   Label5
+LABEL   Label4
+LABEL   Label5
+JGR i j Label1
+JGE i h Label6
+ASSIGN   t
+JMP   Label7
+LABEL   Label6
+LABEL   Label7
+JLE j l Label8
+ASSIGN   t
+JMP   Label9
+LABEL   Label8
+LABEL   Label9
+ASSIGN 1  qsort
+JMP   input
+MUL  5 T13
+ASSIGN T13  meanless
+ASSIGN 1  i
+LABEL   Label10
+LOAD a i T14
+WRITE   T14
+ADD i 1 i
+JNE i 10 Label10
+WRITE   
+READ   i

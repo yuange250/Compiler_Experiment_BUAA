@@ -9,8 +9,8 @@ begin
    do
       begin
       read(ntemp);
-      a[n]:=ntemp;
-      end;
+      a[n]:=ntemp
+      end
 end;
 function qsort(l,h:integer):integer;
 var

@@ -4,6 +4,7 @@
 #include <map>
 #include <fstream>
 #include "globals_const.h"
+#include <sstream>
 using namespace std;
 extern string symbols[];
 extern char ch;
@@ -58,4 +59,10 @@ struct mid_code{
 };
 extern mid_code MID_CODE;
 extern mid_code codes[codes_max];
+<<<<<<< HEAD
 extern int code_index;
+extern int temp_var_num;
+extern int label_num;
+=======
+extern int code_index;
+>>>>>>> origin/master

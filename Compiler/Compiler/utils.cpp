@@ -1,52 +1,66 @@
 #include "stdafx.h"
 #include "globals.h"
 void getsym();
-bool ifin(string symbol, string symbols[])
+string errors[] = { "该标识符未定义", //0
+"标识符重复定义",   //1
+"应是标识符",   //2
+"应是')'",//3
+"应是':',在说明类型时必须有此冒号", //4
+"非法符号，以跳读",  //5
+"形式参数表中,形参说明应该以标识符或var开头", //6
+"应是of",//7
+"应是'('",//8
+"类型定义必须以标识符打头",//9
+"应是'['",//10
+"应是']'",//11
+"应为char或者integer",//12
+"应是'=',':='只能用于赋值语句",//13
+"缺少条件语句",//14
+"数值太大,应小于2**32",//15
+"程序结尾应该为.",//16
+"字符中含有非法字符",//17
+"应是类型标示符",//18
+"字符串字符错误",//19
+"应为'('",//20
+"函数或过程传入参数数量不正确",//21
+"应为判断符,>=,>,<>...",//22
+"我就不信这个错误会被爆出来！",//23
+"应为赋值号':='",//24
+"应该是then",//25
+"应为while",//26
+"应为downto或者to",//27
+"应为do",//28
+"应为end",//29
+"下雪了,分程序怎么能没有复合语句",//30
+"常量的值应该是字符或者数字",//31
+"应是'='",//32
+"应为';'",//33
+"应为':'",//34
+"数组下标错误",//35
+"因子开始错误，应为标识符，数字或者左括号",//36
+"应为声明符或者begin",//37
+"错误的语句结束符",//38
+"错误的语句开始符",//39
+"声明部分错误的结束符",//40
+"因子结束错误"//41
+};
+int ifin(string symbl, string * symbs)
 {
-	int i = 0;
-	while (symbols[i]!="")
-	{
-		if (symbol == symbols[i])
-			return true;
-		i++;
-	}
-	return false;
+	for (int i=0; symbs[0] != "";symbs++,i++)
+		if (symbl == symbs[0])
+			return i+1;
+	return 0;
 }
 
 void error(int error_no)
 {
 	//print out 
-	if (error_no == 1)
-		printf("illegal form in char!correct form:'1' or 'a'\n");
-	else if (error_no == 2)
-		printf("illegal end of the file\n");
-	else if (error_no == 3)
-		printf("illegal charactor\n");
-	else if (error_no == 4)
-		printf("illegal charactor in string!\n");
-	else if (error_no == 5)
-		printf("no such symbol");
-	else if (error_no == 6)
-		printf("should be an ident+");
-	else if (error_no == 7)
-		printf("type error!");
-	else if (error_no == 8)
-		printf(") absence");
-	else if (error_no == 9)
-		printf("too little parameters");
-	else if (error_no == 10)
-		printf("[ absence");
-	else if (error_no == 11)
-		printf("] absence");
-	else if (error_no == 12)
-		printf("redefine error");
-	else if (error_no == 13)
-		printf("do lost");
+	printf("%s\n",errors[error_no]);
 	err++;
 	printf("error occur!\n");
 }
 
-void test(string s1[], string s2[], int error_no)
+void test(string *s1, string *s2, int error_no)
 {
 	if (!ifin(sym, s1))
 	{

@@ -165,7 +165,7 @@ void getsym()
 			{
 				sym = "nul";
 				iden = "";
-				error(1);
+				error(17);
 				while (ch != '\'')
 				{
 					getch();
@@ -177,7 +177,7 @@ void getsym()
 		{
 			sym = "nul";
 			iden = "";
-			error(1);
+			error(17);
 			while (ch != '\'')
 			{
 				getch();
@@ -199,7 +199,7 @@ void getsym()
 			}
 			else
 			{
-				error(4);
+				error(19);
 			}
 			getch();
 		}
@@ -214,7 +214,7 @@ void getsym()
 		sym= ssym[ch];
 		if (sym == "")
 		{
-			error(3);//illegal charactor
+			error(5);//illegal charactor
 		}
 		else
 		  cout << sym + "," << ch << endl;

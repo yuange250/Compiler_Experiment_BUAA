@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "globals.h"
 void error(int error_no);
-void test(string s1[], string s2[], int error_no);
-bool ifin(string symbol, string symbols[]);
+void test(string *s1, string *s2, int error_no);
+bool ifin(string symbol, string *symbols);
 void getsym();
 void block();
 int check_ifexist(string id);
@@ -50,7 +50,7 @@ void const_declaration()//这与下面所有declaration类似,都是递归下降的一部分，程序
 			if (sym == "eql" || sym == "becomes")
 			{
 				if (sym == "becomes")
-					error(1);
+					error(13);
 				getsym();
 				if (sym == "plus" || sym == "minus")
 				{
@@ -64,7 +64,7 @@ void const_declaration()//这与下面所有declaration类似,都是递归下降的一部分，程序
 						number = -number;
 					if (check_ifexist(iden) != 0)
 					{
-						error(12);
+						error(1);
 					}
 
 
@@ -73,19 +73,22 @@ void const_declaration()//这与下面所有declaration类似,都是递归下降的一部分，程序
 					getsym();
 				}
 				else
-					error(2);
+					error(31);
 			}
 			else
-				error(3);
+				error(32);
 		}
 		else
-			error(4);
+			error(2);
 		
 	} while (sym == ",");
 	if (sym != "semicolon")
-		error(99);//缺少分号
+		error(33);//缺少分号
 	else
 		getsym();
+	string correctsymbols[] = {"varsym","funcsym","procsym","beginsym",""};
+	string continuesymbols[] = {""};
+	test(correctsymbols,continuesymbols,40);
 }
 void entervar(bool if_params)//将变量的基本信息登录到符号表中，因为pascal文法的限制，var x,y,z：char;所以需要现将名字登陆进符号表，记录开始位置，然后去填类型
 {
@@ -129,7 +132,7 @@ void variable_declaration()
 		{
 			if (check_ifexist(iden) != 0)
 			{
-				error(12);
+				error(1);
 			}
 
 
@@ -137,7 +140,7 @@ void variable_declaration()
 			getsym();
 		}
 		else
-			error(99);
+			error(2);
 		while (sym == "comma")
 		{
 			getsym();
@@ -145,7 +148,7 @@ void variable_declaration()
 			{
 				if (check_ifexist(iden) != 0)
 				{
-					error(12);
+					error(1);
 				}
 
 
@@ -153,11 +156,13 @@ void variable_declaration()
 				getsym();
 
 			}
+			else
+				error(2);
 		}
 		if (sym == "colon")
 			getsym();
 		else
-			error(99);
+			error(34);
 		if (sym == "integersym" || sym == "charsym")
 		{
 			entervartype(sym, curren_index);
@@ -170,35 +175,40 @@ void variable_declaration()
 			if (sym == "lbracket")
 				getsym();
 			else
-				error(99);//缺少左中括号
+				error(10);//缺少左中括号
 			if (sym != "uinteger")
-				error(99);//数组下标错误
+				error(35);//数组下标错误
 			else
 			{
 				size = number;
 				getsym();
 			}
 			if (sym != "rbracket")
-				error(99);//缺少右中括号。
+				error(11);//缺少右中括号。
 			else
 				getsym();
 			if (sym != "ofsym")
-				error(99);//缺少of
+				error(7);//缺少of
 			else
 				getsym();
 			if (sym == "charsym" || sym == "integersym")
 			{
-				enterarray(sym,size,curren_index);
+				enterarray(sym, size, curren_index);
 				getsym();
 			}
 			else
-				error(99);//应该为基本类型
+				error(12);//应该为基本类型
 		}
+		else
+			error(18);
 		if (sym != "semicolon")
-			error(99);
+			error(33);
 		else
 			getsym();
 	} while (sym == "ident");
+	string correctsymbols[] = { "funcsym", "procsym", "beginsym", "" };
+	string continuesymbols[] = { "" };
+	test(correctsymbols, continuesymbols, 40);
 }
 void enterfunction()//填入function的基本信息
 {
@@ -227,18 +237,26 @@ void func_parameters()//函数参数，填入进param_list指针所指的空间，
 			getsym();
 		if (sym == "ident")
 		{
+			if (check_ifexist(iden) != 0)
+			{
+				error(1);
+			}
 			id_table[current_tx].param_list->param_names[top_index++] = sym;
 			id_table[current_tx].param_list->param_num++;
 			entervar(true);
 			getsym();
 		}
 		else
-			error(99);
+			error(2);
 		while (sym == "comma"&&id_table[current_tx].param_list->param_num<param_max)
 		{
 			getsym();
 			if (sym == "ident")
 			{
+				if (check_ifexist(iden) != 0)
+				{
+					error(1);
+				}
 				id_table[current_tx].param_list->param_names[top_index++] = sym;//参数的名字
 				id_table[current_tx].param_list->param_num++;
 				entervar(true);
@@ -248,7 +266,7 @@ void func_parameters()//函数参数，填入进param_list指针所指的空间，
 		if (sym == "colon")
 			getsym();
 		else
-			error(99);
+			error(34);
 		if (sym == "integersym" || sym == "charsym")
 		{
 			for (int i = bottom_index; i < top_index; i++)
@@ -259,7 +277,7 @@ void func_parameters()//函数参数，填入进param_list指针所指的空间，
 			getsym();//此处应该填表的，将类型填进去。
 		}
 		else
-			error(99);
+			error(12);
 	} while (sym == "semicolon");
 }
 
@@ -271,7 +289,7 @@ void function_declaration()
 	{
 		if (check_ifexist(iden) != 0)
 		{
-			error(12);
+			error(1);
 		}
 		generate("LABEL","","",iden);
 
@@ -279,7 +297,7 @@ void function_declaration()
 		getsym();
 	}
 	else
-		error(99);//应该为标识符。
+		error(2);//应该为标识符。
 	int current_tx = tx;
 	if (sym == "lparen")
 	{
@@ -288,10 +306,10 @@ void function_declaration()
 		if (sym == "rparen")
 			getsym();
 		else
-			error(99);//缺失右括号。
+			error(3);//缺失右括号。
 	}
 	if (sym != "colon")
-		error(99);//缺失冒号
+		error(34);//缺失冒号
 	else
 		getsym();
 	if (sym == "charsym" || sym == "integersym")
@@ -300,16 +318,19 @@ void function_declaration()
 		getsym();
 	}
 	else
-		error(99);//基本类型缺失
+		error(12);//基本类型缺失
 	if (sym != "semicolon")
 		error(99);//缺少分号。
 	else
 		getsym();
 	block();
 	if (sym != "semicolon")
-		error(99);//缺失分号
+		error(33);//缺失分号
 	else
 		getsym();
+	string correctsymbols[] = {  "funcsym", "procsym", "beginsym", "" };
+	string continuesymbols[] = { "" };
+	test(correctsymbols, continuesymbols, 40);
 }
 void enterprocedure()
 {
@@ -329,7 +350,7 @@ void procedure_declaration()
 	{
 		if (check_ifexist(iden) != 0)
 		{
-			error(12);
+			error(1);
 		}
 		generate("LABEL", "", "", iden);
 
@@ -337,7 +358,7 @@ void procedure_declaration()
 		getsym();
 	}
 	else
-		error(99);//应该为标识符。
+		error(2);//应该为标识符。
 	if (sym == "lparen")
 	{
 		getsym();
@@ -345,15 +366,18 @@ void procedure_declaration()
 		if (sym == "rparen")
 			getsym();
 		else
-			error(99);//缺失右括号。
+			error(3);//缺失右括号。
 	}
 	if (sym != "semicolon")
-		error(99);//缺少分号。
+		error(33);//缺少分号。
 	else
 		getsym();
 	block();
 	if (sym != "semicolon")
-		error(99);//缺失分号
+		error(33);//缺失分号
 	else
 		getsym();
+	string correctsymbols[] = { "funcsym", "procsym", "beginsym", "" };
+	string continuesymbols[] = { "" };
+	test(correctsymbols, continuesymbols, 40);
 }

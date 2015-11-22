@@ -7,4 +7,8 @@ const int amax = 2047;//address max
 const int levmax = 3;//max depth of block
 const int line_max = 81;
 const int param_max = 10;
+<<<<<<< HEAD
 const int codes_max = 1000;
+=======
+const int codes_max = 1000;
+>>>>>>> origin/master
