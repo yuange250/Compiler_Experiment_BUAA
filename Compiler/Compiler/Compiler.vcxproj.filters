@@ -56,7 +56,10 @@
     <ClCompile Include="block_anlysis.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="generate.cpp">
+    <ClCompile Include="generate_midcode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="generate_mips.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

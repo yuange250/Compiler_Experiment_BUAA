@@ -6,19 +6,67 @@ int position(string id);
 void test(string *s1, string *s2, int error_no);
 int ifin(string symbol, string *symbols);
 void getsym();
-void expression(string &result);
+void expression(string &result, string &result_type);
 void multi_statement();
 string generate_temp_var();
 void generate(string opr, string src1, string src2, string des);
+int check_var_ifexist(string id);
+int check_func_assign_ifOK(string id);
 string generate_label();
+string generate_func_proc_label(string name, int code);
+void array_ident(string &result);
 void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 	string result;
+	string type;
 	if (sym == "lparen")
 	{
 		int nums = 0;
 		do{
 			getsym();
-			expression(result);
+			if (id_table[posi].param_list->addr_or_value[nums])
+			{
+				if (sym == "ident")
+				{
+					int posi=position(iden);
+					if (posi == 0)
+					{
+						error(0);
+						expression(result, type);
+					}
+					else if (id_table[posi].type == "integersym"&&id_table[posi].type == "charsym")
+					{
+						generate("PUSHA",id_table[posi].name,"0","");
+						type = id_table[posi].type;
+						getsym();
+					}
+					else if (id_table[posi].type == "array")
+					{
+						string array_name = iden;
+						string array_offside;
+						type = id_table[posi].arrayinfo->type;
+						getsym();
+						array_ident(array_offside);
+						generate("PUSHA", array_name, array_offside, "");
+						getsym();
+					}
+					else
+					{
+						error(44);
+					}
+				}
+				else
+				{
+					error(2);
+					expression(result, type);
+				}
+			}
+			else
+			{
+				expression(result, type);
+				generate("PUSH",result,"","");
+			}
+			if (id_table[posi].param_list->types[nums] == "charsym"&&type != "charsym")
+				error(42);
 			nums++;
 		} while (sym == "comma");
 
@@ -26,34 +74,37 @@ void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 		{
 			error(3);
 		}
+		else
+			getsym();
 		if (nums != id_table[posi].param_list->param_num)
 		{
 			error(21);
 		}
+		generate("JMP", "", "", generate_func_proc_label(id_table[posi].name,id_table[posi].param_list->function_code));
 		//int paramnum;//参数个数。
 	}
 
 }
 void array_ident(string &result)
 {
-
+	string type;
 	if (sym != "lbracket")
 	{
 		error(10);
 	}
 	getsym();
-	expression(result);
+	expression(result,type);
 	if (sym != "rbracket")
 	{
 		error(11);
 	}
 }
-void factor(string &result){
+void factor(string &result, string &result_type){
 	printf("now in factor\n");
 	int i = 0;
 	//	test(facbegsys,fsys,24);
 	//string correctsymbols[] = { "ident", "ifsym", "dosym", "beginsym", "readsym", "writesym", "forsym", "" };
-	string continuesymbols[] = { "semicolon", "endsym", "times", "plus", "slash", "minus", "eql", "neq", "lss", "leq", "gtr", "geq", "thensym","tosym","downtosym","rparen","rbracket","dosym","whilesym","comma","" };
+	string continuesymbols[] = { "semicolon", "endsym", "times", "plus", "slash", "minus", "eql", "neq", "lss", "leq", "gtr", "geq", "thensym","tosym","downtosym","rparen","rbracket","dosym","whilesym","comma","elsesym","" };
 	test(facbegsys, continuesymbols, 36);
 	while (ifin(sym, facbegsys))
 	{
@@ -72,7 +123,12 @@ void factor(string &result){
 				if (id_table[posi].obj == "function")
 				{
 					getsym();
+					generate("CALL", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code), "", "");
 					function_params(posi);
+					string des = generate_temp_var();
+					generate("POP", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code) + "_value", "", des);
+					result = des;
+					result_type = id_table[posi].type;
 				}
 				else if (id_table[posi].type == "array")
 				{
@@ -85,13 +141,17 @@ void factor(string &result){
 					des = generate_temp_var();
 					generate("LOAD",src1,src2,des);
 					result = des;
+					result_type = id_table[posi].arrayinfo->type;
+					getsym();
 				}
 				else
 				{
 					result = iden;
+					result_type = id_table[posi].type;
+					getsym();
 				}
 			}
-			getsym();
+			
 		}
 		else if (sym == "uinteger")
 		{
@@ -104,6 +164,7 @@ void factor(string &result){
 			stringstream ss;
 			ss << number;
 			result = ss.str();
+			result_type = "integersym";
 		}
 		else if (sym == "lparen")
 		{
@@ -112,7 +173,8 @@ void factor(string &result){
 			string fsys_temp[sizeof(fsys)/sizeof(string)+1];
 			memcpy(fsys_temp, fsys, length_temp);
 			fsys_temp[length_temp] = "rparen";
-			*/			expression(result);
+			*/			
+			expression(result,result_type);
 			if (sym == "rparen")
 			{
 				getsym();
@@ -125,15 +187,22 @@ void factor(string &result){
 		test(continuesymbols, facbegsys, 41);
 	}
 }
-void term(string &result)
+void term(string &result,string &result_type)
 {
 	printf("now in term\n");
 	string src1;
 	string src2;
 	string des;
 	string opr;
-	factor(src1);
+	string type;
+	bool type_sure_flag = false;
+	factor(src1,type);
 	des = src1;
+	if (type == "integersym")
+	{
+		result_type = type;     //只要有一个因素的类型是int那么整个term的类型就是int
+		type_sure_flag = true;
+	}
 	while (sym == "times" || sym == "slash")
 	{
 		if (sym == "times")
@@ -142,14 +211,23 @@ void term(string &result)
 			opr = "DIV";
 		des = generate_temp_var();
 		getsym();
-		factor(src2);
+		factor(src2,type);
+		if (type == "integersym")
+		{
+			result_type = type;
+			type_sure_flag = true;
+		}
 		generate(opr, src1, src2, des);
 		src1 = des;
 	}
 	result = des;
+	if (!type_sure_flag)
+	{
+		result_type = "charsym";
+	}
 }
 
-void expression(string &result)
+void expression(string &result,string &result_type)
 {
 	/*	if (sym == "ident")
 	{
@@ -166,7 +244,10 @@ void expression(string &result)
 	string src2;
 	string des;
 	string opr;
+	string type;
 	bool symbol_flag = false;
+	bool type_sure_flag = false;
+
 	printf("now in expression\n");
 	if (sym == "plus" || sym == "minus")
 	{
@@ -175,7 +256,12 @@ void expression(string &result)
 		getsym();
 	}
 
-	term(src1);
+	term(src1,type);
+	if (type == "integersym")
+	{
+		result_type = type;     //只要有一个因素的类型是int那么整个term的类型就是int
+		type_sure_flag = true;
+	}
 	if (symbol_flag == true)
 	{
 		des = generate_temp_var();
@@ -191,11 +277,20 @@ void expression(string &result)
 			opr = "SUB";
 		des = generate_temp_var();
 		getsym();
-		term(src2);
+		term(src2,type);
+		if (type == "integersym")
+		{
+			result_type = type;     //只要有一个因素的类型是int那么整个term的类型就是int
+			type_sure_flag = true;
+		}
 		generate(opr, src1, src2, des);
 		src1 = des;
 	}
 	result = des;
+	if (!type_sure_flag)
+	{
+		result_type = "charsym";
+	}
 }
 void condition()
 {
@@ -205,14 +300,15 @@ void condition()
 	string src2;
 	string des;
 	string opr;
-	expression(src1);
+	string type;
+	expression(src1,type);//我还是觉得条件语句并不需要检查类型的问题,'1'>'2'也是阔以的嘛
 	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq", "" };
 	string oprs[] = { "JNE", "JEQ", "JGE", "JGR", "JLE", "JLS" };
 	if ((i = ifin(sym, compare_symbols)) != 0)
 	{
 		opr = oprs[i-1];
 		getsym();
-		expression(src2);
+		expression(src2,type);
 	}
 	else
 		error(22);
@@ -230,6 +326,7 @@ void statement()
 		string src2;
 		string des;
 		string opr;
+		string type;
 		//判断是不是函数。若是的话，也没什么，卧槽函数部分好傻逼啊，难道是弱类型的语言吗，可以随便赋值。
 		int pos = position(iden);
 
@@ -241,11 +338,12 @@ void statement()
 		{
 			des = id_table[pos].name;
 			printf("now in call_statement\n");
+			generate("CALL", generate_func_proc_label(id_table[pos].name, id_table[pos].param_list->function_code), "", "");
 			getsym();
 			function_params(pos);
-			generate("JMP","","",des);
-			if (sym != "semicolon")
-				getsym();
+		
+		/*	if (sym != "semicolon")
+				getsym();*/
 		}
 		else
 		{
@@ -259,6 +357,10 @@ void statement()
 			else if (id_table[pos].type == "integersym" || id_table[pos].type == "charsym")
 			{
 				des = id_table[pos].name;
+				if (id_table[pos].obj=="function"&&!check_func_assign_ifOK(des))
+				{
+					error(43);
+				}
 			}
 			else
 			{
@@ -273,12 +375,16 @@ void statement()
 			
 			if (id_table[pos].type == "array")
 			{
-				expression(des);
+				expression(des,type);
+				if (id_table[pos].arrayinfo->type == "charsym"&&type != "charsym")
+					error(42);
 				generate("STORE",src1,src2,des);
 			}
 			else if (id_table[pos].type == "integersym" || id_table[pos].type == "charsym")
 			{
-				expression(src1);
+				expression(src1,type);
+				if (id_table[pos].type == "charsym"&&type != "charsym")
+					error(42);
 				generate("ASSIGN",src1,"",des);
 			}
 		}
@@ -300,8 +406,11 @@ void statement()
 		string label = generate_label();
 		generate("LABEL", "", "", label);
 		codes[code_index_temp].des = label;
-		if (sym == "else")
+		if (sym == "elsesym")
+		{
+			getsym();
 			statement();
+		}
 		string label2 = generate_label();
 		generate("LABEL","","",label2);
 		codes[code_index_temp2].des = label2;
@@ -361,6 +470,7 @@ void statement()
 		printf("now in writestatement\n");
 		getsym();
 		string des;
+		string type;
 		if (sym == "lparen")
 		{
 			getsym();
@@ -371,11 +481,11 @@ void statement()
 				if (sym == "comma")
 				{
 					getsym();
-					expression(des);
+					expression(des,type);
 				}
 			}
 			else
-				expression(des);
+				expression(des,type);//这儿也是不需要滴！
 			generate("WRITE","","",des);
 			if (sym != "rparen")
 				error(3);
@@ -392,6 +502,7 @@ void statement()
 		string src2;
 		string des;
 		string opr;
+		string type;
 		if (sym == "ident")
 		{
 			getsym();
@@ -407,7 +518,7 @@ void statement()
 		if (sym == "becomes")
 		{
 			getsym();
-			expression(src1);
+			expression(src1,type);
 		}
 		else
 			error(24);
@@ -421,7 +532,7 @@ void statement()
 			else
 				opr = "ADD";
 			getsym();
-			expression(src2);
+			expression(src2,type);
 		}
 		else
 			error(27);
@@ -438,7 +549,7 @@ void statement()
 		generate(opr,des,"1",des);
 		generate("JNE",des,src2,label);
 	}
-	string correctsymbols2[] = { "semicolon", "endsym", "whilesym","" };
+	string correctsymbols2[] = { "semicolon", "endsym", "whilesym","elsesym","" };
 	string continuesymbols2[] = { "" };
 	test(correctsymbols2, continuesymbols2, 38);
 }

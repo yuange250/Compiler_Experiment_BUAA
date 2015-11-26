@@ -2,22 +2,21 @@
 #include "globals.h"
 void error(int error_no);
 void test(string *s1, string *s2, int error_no);
-bool ifin(string symbol, string *symbols);
+int ifin(string symbol, string *symbols);
 void getsym();
-void block();
-int check_ifexist(string id);
+void block(string func_name, int code);
+int check_var_ifexist(string id);
+int check_func_assign_ifOK(string id);
 void generate(string opr, string src1, string src2, string des);
+string generate_func_proc_label(string name, int code);
 void enter(string type)//·ÏÆúµÄ¿ó¿Ó
 {
 	tx++;
 	id_table[tx].name = iden;
 	id_table[tx].obj = type;
-
-
 }
-void enterconst()//Ïò·ûºÅ±íÖĞµÇÂ½³£Êı£¬ºÜ¼òµ¥£¬Í¬Ê±½«Öµ´æ½øÈ¥
+void enter_const()//Ïò·ûºÅ±íÖĞµÇÂ½³£Êı£¬ºÜ¼òµ¥£¬Í¬Ê±½«Öµ´æ½øÈ¥
 {
-
 	tx++;
 	id_table[tx].name = iden;
 	if (sym == "uinteger")
@@ -62,14 +61,11 @@ void const_declaration()//ÕâÓëÏÂÃæËùÓĞdeclarationÀàËÆ,¶¼ÊÇµİ¹éÏÂ½µµÄÒ»²¿·Ö£¬³ÌĞò
 				{
 					if (minus_symbol)
 						number = -number;
-					if (check_ifexist(iden) != 0)
+					if (check_var_ifexist(iden) != 0)
 					{
 						error(1);
 					}
-
-
-
-					enterconst();
+					enter_const();
 					getsym();
 				}
 				else
@@ -90,7 +86,7 @@ void const_declaration()//ÕâÓëÏÂÃæËùÓĞdeclarationÀàËÆ,¶¼ÊÇµİ¹éÏÂ½µµÄÒ»²¿·Ö£¬³ÌĞò
 	string continuesymbols[] = {""};
 	test(correctsymbols,continuesymbols,40);
 }
-void entervar(bool if_params)//½«±äÁ¿µÄ»ù±¾ĞÅÏ¢µÇÂ¼µ½·ûºÅ±íÖĞ£¬ÒòÎªpascalÎÄ·¨µÄÏŞÖÆ£¬var x,y,z£ºchar;ËùÒÔĞèÒªÏÖ½«Ãû×ÖµÇÂ½½ø·ûºÅ±í£¬¼ÇÂ¼¿ªÊ¼Î»ÖÃ£¬È»ºóÈ¥ÌîÀàĞÍ
+void enter_var(bool if_params)//½«±äÁ¿µÄ»ù±¾ĞÅÏ¢µÇÂ¼µ½·ûºÅ±íÖĞ£¬ÒòÎªpascalÎÄ·¨µÄÏŞÖÆ£¬var x,y,z£ºchar;ËùÒÔĞèÒªÏÖ½«Ãû×ÖµÇÂ½½ø·ûºÅ±í£¬¼ÇÂ¼¿ªÊ¼Î»ÖÃ£¬È»ºóÈ¥ÌîÀàĞÍ
 {
 	tx++;
 	id_table[tx].name = iden;
@@ -102,8 +98,9 @@ void entervar(bool if_params)//½«±äÁ¿µÄ»ù±¾ĞÅÏ¢µÇÂ¼µ½·ûºÅ±íÖĞ£¬ÒòÎªpascalÎÄ·¨µÄÏ
 	id_table[tx].able = true;
 	id_table[tx].param_list = NULL;
 	id_table[tx].arrayinfo = NULL;
+	id_table[tx].addr_or_value = false;
 }
-void entervartype(string type, int tx_start){//Õâ¸öÊÇÌîÈë±äÁ¿»ù±¾ÀàĞÍµÄº¯Êı,tx_startÒÑ¾­ÔÚvariable_declarationÖĞ¼ÇÂ¼ºÃ,´ÓÕâ¸ö½Úµã¿ªÊ¼ÌîÈë±äÁ¿ÀàĞÍ¡£
+void enter_var_type(string type, int tx_start){//Õâ¸öÊÇÌîÈë±äÁ¿»ù±¾ÀàĞÍµÄº¯Êı,tx_startÒÑ¾­ÔÚvariable_declarationÖĞ¼ÇÂ¼ºÃ,´ÓÕâ¸ö½Úµã¿ªÊ¼ÌîÈë±äÁ¿ÀàĞÍ¡£
 	int index = tx_start + 1;
 	while (index <= tx)
 	{
@@ -111,7 +108,7 @@ void entervartype(string type, int tx_start){//Õâ¸öÊÇÌîÈë±äÁ¿»ù±¾ÀàĞÍµÄº¯Êı,tx_s
 		index++;
 	}
 }
-void enterarray(string type,int size,int tx_start)//±äÁ¿ÀàĞÍÊÇÊı×éµÄÇé¿ö¡£ÉÔÎ¢ÓĞµã¸´ÔÓ£¬ÒòÎªÎÒÔÚtable½ÚµãÖĞµ¥¶À¼ÓÁËÒ»¸öÖ¸Ïòarray_infoµÄÖ¸Õë£¬array_infoÖĞ´æ´¢ÁËarrayµÄÏà¹ØĞÅÏ¢¡£
+void enter_array(string type,int size,int tx_start)//±äÁ¿ÀàĞÍÊÇÊı×éµÄÇé¿ö¡£ÉÔÎ¢ÓĞµã¸´ÔÓ£¬ÒòÎªÎÒÔÚtable½ÚµãÖĞµ¥¶À¼ÓÁËÒ»¸öÖ¸Ïòarray_infoµÄÖ¸Õë£¬array_infoÖĞ´æ´¢ÁËarrayµÄÏà¹ØĞÅÏ¢¡£
 {
 	int index = tx_start + 1;
 	while (index <= tx)
@@ -130,13 +127,13 @@ void variable_declaration()
 		int curren_index = tx;//ÏÈ¼Ç×¡µ±Ç°·ûºÅ±íµÄÎ»ÖÃ
 		if (sym == "ident")
 		{
-			if (check_ifexist(iden) != 0)
+			if (check_var_ifexist(iden) != 0)
 			{
 				error(1);
 			}
 
 
-			entervar(false);
+			enter_var(false);
 			getsym();
 		}
 		else
@@ -146,13 +143,13 @@ void variable_declaration()
 			getsym();
 			if (sym == "ident")
 			{
-				if (check_ifexist(iden) != 0)
+				if (check_var_ifexist(iden) != 0)
 				{
 					error(1);
 				}
 
 
-				entervar(false);
+				enter_var(false);
 				getsym();
 
 			}
@@ -165,7 +162,7 @@ void variable_declaration()
 			error(34);
 		if (sym == "integersym" || sym == "charsym")
 		{
-			entervartype(sym, curren_index);
+			enter_var_type(sym, curren_index);
 			getsym();//´Ë´¦Ó¦¸ÃÌî±íµÄ£¬½«ÀàĞÍÌî½øÈ¥¡£
 		}
 		else if (sym == "arraysym")
@@ -193,7 +190,7 @@ void variable_declaration()
 				getsym();
 			if (sym == "charsym" || sym == "integersym")
 			{
-				enterarray(sym, size, curren_index);
+				enter_array(sym, size, curren_index);
 				getsym();
 			}
 			else
@@ -210,7 +207,7 @@ void variable_declaration()
 	string continuesymbols[] = { "" };
 	test(correctsymbols, continuesymbols, 40);
 }
-void enterfunction()//ÌîÈëfunctionµÄ»ù±¾ĞÅÏ¢
+void enter_function()//ÌîÈëfunctionµÄ»ù±¾ĞÅÏ¢
 {
 	tx++;
 	id_table[tx].name = iden;
@@ -219,31 +216,38 @@ void enterfunction()//ÌîÈëfunctionµÄ»ù±¾ĞÅÏ¢
 	id_table[tx].able = true;
 	id_table[tx].param_list = NULL;
 	id_table[tx].arrayinfo = NULL;
+	id_table[tx].param_list = (struct params *)calloc(1, sizeof(PARAMS));
+	id_table[tx].param_list->function_code = function_num++;
 }
-void func_parameters()//º¯Êı²ÎÊı£¬ÌîÈë½øparam_listÖ¸ÕëËùÖ¸µÄ¿Õ¼ä£¬
+void enter_func_parameters()//º¯Êı²ÎÊı£¬ÌîÈë½øparam_listÖ¸ÕëËùÖ¸µÄ¿Õ¼ä£¬
 {
 	printf("now in func_parameter\n");
-	id_table[tx].param_list = (struct params *)calloc(1, sizeof(PARAMS));
 	id_table[tx].param_list->param_num=0;
 	int current_tx = tx;
 	int bottom_index = 0;
 	int top_index = 0;
-
+	bool addr_or_value;
 	do{
 		bottom_index = top_index;
 		if (sym == "semicolon")
 			getsym();
 		if (sym == "varsym")
+		{
+			addr_or_value = true;//´«µØÖ·
 			getsym();
+		}
+		else
+			addr_or_value = false;//´«Öµ
 		if (sym == "ident")
 		{
-			if (check_ifexist(iden) != 0)
+			if (check_var_ifexist(iden) != 0)
 			{
 				error(1);
 			}
 			id_table[current_tx].param_list->param_names[top_index++] = sym;
 			id_table[current_tx].param_list->param_num++;
-			entervar(true);
+
+			enter_var(true);
 			getsym();
 		}
 		else
@@ -253,13 +257,14 @@ void func_parameters()//º¯Êı²ÎÊı£¬ÌîÈë½øparam_listÖ¸ÕëËùÖ¸µÄ¿Õ¼ä£¬
 			getsym();
 			if (sym == "ident")
 			{
-				if (check_ifexist(iden) != 0)
+				if (check_var_ifexist(iden) != 0)
 				{
 					error(1);
 				}
+
 				id_table[current_tx].param_list->param_names[top_index++] = sym;//²ÎÊıµÄÃû×Ö
 				id_table[current_tx].param_list->param_num++;
-				entervar(true);
+				enter_var(true);
 				getsym();
 			}
 		}
@@ -272,7 +277,9 @@ void func_parameters()//º¯Êı²ÎÊı£¬ÌîÈë½øparam_listÖ¸ÕëËùÖ¸µÄ¿Õ¼ä£¬
 			for (int i = bottom_index; i < top_index; i++)
 			{
 				id_table[current_tx].param_list->types[i] = sym;//²ÎÊıµÄÀàĞÍ¡£
+				id_table[current_tx].param_list->addr_or_value[i] = addr_or_value;
 				id_table[current_tx + 1 + i].type=sym;
+				id_table[current_tx + 1 + i].addr_or_value = addr_or_value;
 			}
 			getsym();//´Ë´¦Ó¦¸ÃÌî±íµÄ£¬½«ÀàĞÍÌî½øÈ¥¡£
 		}
@@ -284,16 +291,15 @@ void func_parameters()//º¯Êı²ÎÊı£¬ÌîÈë½øparam_listÖ¸ÕëËùÖ¸µÄ¿Õ¼ä£¬
 void function_declaration()
 {//º¯ÊıÉùÃ÷²¿·Ö
 	printf("now in funcdeclaration\n");
-	
 	if (sym == "ident")
 	{
-		if (check_ifexist(iden) != 0)
+		if (check_var_ifexist(iden) != 0)
 		{
 			error(1);
 		}
-		generate("LABEL","","",iden);
+		
 
-		enterfunction();
+		enter_function();
 		getsym();
 	}
 	else
@@ -302,7 +308,7 @@ void function_declaration()
 	if (sym == "lparen")
 	{
 		getsym();
-		func_parameters();
+		enter_func_parameters();
 		if (sym == "rparen")
 			getsym();
 		else
@@ -320,19 +326,20 @@ void function_declaration()
 	else
 		error(12);//»ù±¾ÀàĞÍÈ±Ê§
 	if (sym != "semicolon")
-		error(99);//È±ÉÙ·ÖºÅ¡£
+		error(33);//È±ÉÙ·ÖºÅ¡£
 	else
 		getsym();
-	block();
+	block(id_table[current_tx].name,id_table[current_tx].param_list->function_code);
 	if (sym != "semicolon")
 		error(33);//È±Ê§·ÖºÅ
 	else
 		getsym();
+	generate("RETURN", "", "", "");
 	string correctsymbols[] = {  "funcsym", "procsym", "beginsym", "" };
 	string continuesymbols[] = { "" };
 	test(correctsymbols, continuesymbols, 40);
 }
-void enterprocedure()
+void enter_procedure()
 {
 	tx++;
 	id_table[tx].name = iden;
@@ -342,27 +349,30 @@ void enterprocedure()
 	id_table[tx].able = true;
 	id_table[tx].param_list = NULL;
 	id_table[tx].arrayinfo = NULL;
+	id_table[tx].param_list = (struct params *)calloc(1, sizeof(PARAMS));
+	id_table[tx].param_list->function_code = function_num++;
 }
 void procedure_declaration()
 {//º¯ÊıÓë¹ı³ÌµÄÇø±ğÔÚÓÚÃ»ÓĞ·µ»ØÖµ¶øÒÑ
 	printf("now in proceduredeclaration\n");
 	if (sym == "ident")
 	{
-		if (check_ifexist(iden) != 0)
+		if (check_var_ifexist(iden) != 0)
 		{
 			error(1);
 		}
-		generate("LABEL", "", "", iden);
+//		generate("LABEL", "", "", iden);
 
-		enterprocedure();
+		enter_procedure();
 		getsym();
 	}
 	else
 		error(2);//Ó¦¸ÃÎª±êÊ¶·û¡£
+	int current_tx = tx;
 	if (sym == "lparen")
 	{
 		getsym();
-		func_parameters();
+		enter_func_parameters();
 		if (sym == "rparen")
 			getsym();
 		else
@@ -372,11 +382,12 @@ void procedure_declaration()
 		error(33);//È±ÉÙ·ÖºÅ¡£
 	else
 		getsym();
-	block();
+	block(id_table[current_tx].name, id_table[current_tx].param_list->function_code);
 	if (sym != "semicolon")
 		error(33);//È±Ê§·ÖºÅ
 	else
 		getsym();
+	generate("RETURN","","","");
 	string correctsymbols[] = { "funcsym", "procsym", "beginsym", "" };
 	string continuesymbols[] = { "" };
 	test(correctsymbols, continuesymbols, 40);

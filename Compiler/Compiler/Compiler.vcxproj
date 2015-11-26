@@ -87,7 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="declare_analysis.cpp" />
-    <ClCompile Include="generate.cpp" />
+    <ClCompile Include="generate_midcode.cpp" />
+    <ClCompile Include="generate_mips.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="block_anlysis.cpp" />

@@ -7,6 +7,7 @@ void getch()
 {
 	if (cc == ll)
 	{
+		ln++;
 		char c_temp = 0;
 		if ((c_temp=fgetc(IN))==EOF)
 		{
@@ -73,7 +74,7 @@ void getsym()
 		{
 			sym = wsym[i];
 		}
-		cout<<sym+","<<iden<<endl;
+//		cout<<sym+","<<iden<<endl;
 	}
 	else if (ch >= '0'&&ch <= '9')
 	{
@@ -91,7 +92,7 @@ void getsym()
 		}
 		//			if (point_flag==0)
 		sym = "uinteger";
-		cout << sym + "," << number << endl;
+//		cout << sym + "," << number << endl;
 //		else
 //			sym = "ureal";
 	}
@@ -101,13 +102,13 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "becomes";
-			cout << sym + "," << ":=" << endl;
+//			cout << sym + "," << ":=" << endl;
 			getch();
 		}
 		else
 		{
 			sym = "colon";//这儿要注意回来看一下,好了，不用看
-			cout << sym + "," << ":"<< endl;
+//			cout << sym + "," << ":"<< endl;
 		}
 	}
 	else if (ch == '<')
@@ -116,19 +117,19 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "leq";
-			cout << sym + "," << "<=" << endl;
+//			cout << sym + "," << "<=" << endl;
 			getch();
 		}
 		else if (ch == '>')
 		{
 			sym = "neq";
-			cout << sym + "," << "<>" << endl;
+//			cout << sym + "," << "<>" << endl;
 			getch();
 		}
 		else
 		{
 			sym = "lss";
-			cout << sym + "," << "<" << endl;
+//			cout << sym + "," << "<" << endl;
 		}
 	}
 	else if (ch == '>')
@@ -137,13 +138,13 @@ void getsym()
 		if (ch == '=')
 		{
 			sym = "geq";
-			cout << sym + "," << ">=" << endl;
+//			cout << sym + "," << ">=" << endl;
 			getch();
 		}
 		else
 		{
 			sym = "gtr";
-			cout << sym + "," << ">" << endl;
+//			cout << sym + "," << ">" << endl;
 		}
 	}
 	else if (ch=='\'')
@@ -184,7 +185,7 @@ void getsym()
 			}
 		}
 		getch();
-		cout << sym + "," << iden << endl;
+//		cout << sym + "," << iden << endl;
 	}
 	else if (ch == '\"')
 	{
@@ -199,14 +200,14 @@ void getsym()
 			}
 			else
 			{
-				error(19);
+				error(23);
 			}
 			getch();
 		}
 		a.append(1,'\0');
 		iden = a;
 		sym = "string";
-		cout << sym + "," << iden << endl;
+//		cout << sym + "," << iden << endl;
 		getch();
 	}
 	else
@@ -214,10 +215,10 @@ void getsym()
 		sym= ssym[ch];
 		if (sym == "")
 		{
-			error(5);//illegal charactor
+			error(9);//illegal charactor
 		}
 		else
-		  cout << sym + "," << ch << endl;
+//		  cout << sym + "," << ch << endl;
 		getch();
 	}
 }

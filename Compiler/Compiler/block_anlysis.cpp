@@ -7,40 +7,34 @@ void variable_declaration();
 void function_declaration();
 void procedure_declaration();
 void multi_statement();
-<<<<<<< HEAD
 void test(string *s1, string *s2, int error_no);
 int ifin(string symbol, string * symbols);
-=======
 void generate(string opr, string src1, string src2, string des);
->>>>>>> origin/master
+string generate_func_proc_label(string name, int code);
 void clear(int level)
 {
-	while (id_table[tx].lev == level)
+	int i = tx;
+	while (id_table[i].lev == level)
 	{
-		if (id_table[tx].arrayinfo != NULL)
+		/*
+		if (id_table[i].arrayinfo != NULL)
 		{
-			free(id_table[tx].arrayinfo);
-			id_table[tx].arrayinfo = NULL;
+			free(id_table[i].arrayinfo);
+			id_table[i].arrayinfo = NULL;
 		}
-		if (id_table[tx].param_list != NULL)
+		if (id_table[i].param_list != NULL)
 		{
-			free(id_table[tx].param_list);
-			id_table[tx].param_list = NULL;
+			free(id_table[i].param_list);
+			id_table[i].param_list = NULL;
 		}
-		id_table[tx].able = false;
-		tx--;
+		*/
+		id_table[i].able = false;
+		i--;
 	}
 }
-void block()
+void block(string func_name,int code)
 {
-<<<<<<< HEAD
 	temp_var_num = 0;
-=======
-	int codes_index_temp = code_index;
-	int sp_addr_temp = sp_addr_temp;
-	sp_piece_top
-	generate("SUB", "sp_addr", "", "sp_addr");
->>>>>>> origin/master
 	level++;
 	printf("now in block\n");
 	do{
@@ -73,6 +67,7 @@ void block()
 	} while (ifin(sym,declbegsys));
 	if (sym == "beginsym")
 	{
+		generate("PLABEL", "", "", generate_func_proc_label(func_name, code));
 		multi_statement();
 	}
 	else
