@@ -100,14 +100,18 @@ void block(string func_name, int code);
 bool ifin(string symbol, string symbols[]);
 void listcode();
 void generate(string opr, string src1, string src2, string des);
+void generatemips();
+void list_mips_code();
 int main(int argc, char**argv)
 {
-	IN = fopen("in3.pas", "r");
+	IN = fopen("in.pas", "r");
 	init();
 	getsym();
 	block("MAIN",0);
 	printf("Analysis over!");
 	listcode();
+	generatemips();
+	list_mips_code();
 	getchar();
 	return 0;
 }

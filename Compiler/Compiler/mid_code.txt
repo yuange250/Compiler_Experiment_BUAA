@@ -1,91 +1,84 @@
-PLABEL   IsEmpty_1
-JNE base 0 Label0
-ASSIGN 1  IsEmpty
-JMP   Label1
-LABEL   Label0
-ASSIGN 0  IsEmpty
-LABEL   Label1
+PLABEL   input_1
+ASSIGN 1  n
+LABEL   _Label0
+READ   ntemp
+STORE a n ntemp
+ADD n 1 n
+JNE n 10 _Label0
 RETURN   
-PLABEL   IsFull_2
-JNE base MaxLen Label2
-ASSIGN 1  IsFull
-JMP   Label3
-LABEL   Label2
-ASSIGN 0  IsFull
-LABEL   Label3
-RETURN   
-PLABEL   MakeEmpty_3
-ASSIGN 0  base
-RETURN   
-PLABEL   Pop_4
-JMP   Label4
-ASSIGN IsEmpty_value  T0
-JNE T0 1 
-WRITE   
-JMP   Label5
-LABEL   Label4
-SUB base 1 T1
-ASSIGN T1  base
-LABEL   Label5
-RETURN   
-PLABEL   Top_5
-JMP   Label6
-ASSIGN IsEmpty_value  T0
-JNE T0 1 
-WRITE   
-JMP   Label7
-LABEL   Label6
-SUB base 1 T1
-LOAD stack T1 T2
-ASSIGN T2  Top
-LABEL   Label7
-RETURN   
-PLABEL   Push_6
-JMP   Label8
-ASSIGN IsFull_value  T0
-JNE T0 1 
-WRITE   
-JMP   Label9
-LABEL   Label8
-STORE stack base X
-ADD base 1 T1
-ASSIGN T1  base
-LABEL   Label9
-RETURN   
-PLABEL   PopN_7
-JMP   Top_5
-ASSIGN Top_value  T0
-WRITE   T0
-JLS popNum 1 Label10
-JMP   Pop_4
-SUB popNum 1 T1
-JMP   PopN_7
-JMP   Label11
-LABEL   Label10
-LABEL   Label11
+PLABEL   qsort_2
+ASSIGN l  i
+ASSIGN h  j
+ADD i j %0
+DIV %0 2 %1
+LOAD a %1 %2
+ASSIGN %2  m
+LABEL   _Label1
+SUB i 1 %3
+ASSIGN %3  i
+LABEL   _Label2
+ADD i 1 %4
+ASSIGN %4  i
+LOAD a i _Label2
+JGE %5 m 
+ADD j 1 %6
+ASSIGN %6  j
+LABEL   _Label3
+SUB j 1 %7
+ASSIGN %7  j
+LOAD a j _Label3
+JGE m %8 
+JGR i j _Label4
+LOAD a i %9
+ASSIGN %9  t
+LOAD a j %10
+STORE a i %10
+STORE a j t
+ADD i 1 %11
+ASSIGN %11  i
+SUB j 1 %12
+ASSIGN %12  j
+JMP   _Label5
+LABEL   _Label4
+LABEL   _Label5
+JGR i j _Label1
+JGE i h _Label6
+CALL qsort_2  
+PUSH i  
+PUSH h  
+JMP   qsort_2
+ASSIGN @  %13
+ASSIGN %13  t
+JMP   _Label7
+LABEL   _Label6
+LABEL   _Label7
+JLE j l _Label8
+CALL qsort_2  
+PUSH l  
+PUSH j  
+JMP   qsort_2
+ASSIGN @  %14
+ASSIGN %14  t
+JMP   _Label9
+LABEL   _Label8
+LABEL   _Label9
+ASSIGN 1  qsort
 RETURN   
 PLABEL   MAIN_0
-READ   MaxLen
-JMP   MakeEmpty_3
+CALL input_1  
+JMP   input_1
+CALL qsort_2  
+PUSH 1  
+PUSH 10  
+JMP   qsort_2
+ASSIGN @  %15
+MUL %15 5 %16
+ASSIGN %16  meanless
 ASSIGN 1  i
-LABEL   Label12
-READ   temp
-JNE temp 1 Label13
-READ   temp
-JMP   Push_6
-JMP   Label18
-LABEL   Label13
-JNE temp 2 Label14
-JMP   Pop_4
-JMP   Label17
-LABEL   Label14
-JNE temp 0 Label15
-ASSIGN 0  i
-JMP   Label16
-LABEL   Label15
-LABEL   Label16
-LABEL   Label17
-LABEL   Label18
+LABEL   _Label10
+LOAD a i %17
+WRITE   %17
 ADD i 1 i
-JNE i 0 Label12
-JMP   PopN_7
+JNE i 10 _Label10
+WRITE   
+READ   i

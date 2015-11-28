@@ -129,15 +129,17 @@ int find_func_proc_position(string label)
 		{
 			name.append(1,c);
 		}
+		else
+			break;
 	}
-	for (; i < label.size(); i++)
+	for (i++; i < label.size(); i++)
 	{
 		code_temp.append(1, label.at(i));
 	}
 	code = atoi(code_temp.c_str());
 	for (int i = 1; i <= tx; i++)
 	{
-		if ((id_table[i].obj == "function" || id_table[i].obj == "procedure") || id_table[i].param_list->function_code == code)
+		if ((id_table[i].obj == "function" || id_table[i].obj == "procedure") &&id_table[i].param_list->function_code == code)
 		{
 			return i;
 		}
@@ -147,9 +149,9 @@ int find_func_proc_position(string label)
 int get_the_variable(int posi,string name)
 {
 	//一层层地向外跳着找变量，很笨的办法。
-	for (int j = posi,level=id_table[posi].lev; id_table[j].obj == "procedure" || id_table[j].obj == "function";)
+	for (int j = posi,level=id_table[posi].lev+1; id_table[j].obj == "procedure" || id_table[j].obj == "function";)
 	{
-		for (int i = j; i <= tx && (id_table[i].obj == "var" || id_table[i].obj == "const"); i++)
+		for (int i = j+1; i <= tx && (id_table[i].obj == "var" || id_table[i].obj == "const"); i++)
 		{
 			if (id_table[i].name == name)
 			{
@@ -157,13 +159,13 @@ int get_the_variable(int posi,string name)
 			}
 		}
 		level--;
-		while (id_table[j].lev != level&&j>0)
+		while (id_table[j].lev == level&&j>0&&level>0)
 			j--;
 	}
 }
 string int_to_string(int num)
 {
 	stringstream ss;
-	ss << label_num;
+	ss << num;
 	return ss.str();
 }

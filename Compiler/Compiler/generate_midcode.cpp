@@ -12,14 +12,14 @@ string generate_temp_var()
 	stringstream ss;
 	ss << temp_var_num;
 	temp_var_num++;
-	return "$" + ss.str();
+	return "%" + ss.str();
 }
 string generate_label()
 {
 	stringstream ss;
 	ss << label_num;
 	label_num++;
-	return "#Label" + ss.str();
+	return "_Label" + ss.str();
 }
 string generate_func_proc_label(string name,int code)
 {

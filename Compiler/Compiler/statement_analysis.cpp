@@ -80,10 +80,10 @@ void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 		{
 			error(21);
 		}
-		generate("JMP", "", "", generate_func_proc_label(id_table[posi].name,id_table[posi].param_list->function_code));
+		
 		//int paramnum;//参数个数。
 	}
-
+	generate("JMP", "", "", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code));
 }
 void array_ident(string &result)
 {
@@ -126,7 +126,7 @@ void factor(string &result, string &result_type){
 					generate("CALL", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code), "", "");
 					function_params(posi);
 					string des = generate_temp_var();
-					generate("POP", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code) + "_value", "", des);
+					generate("ASSIGN", "@", "", des);
 					result = des;
 					result_type = id_table[posi].type;
 				}

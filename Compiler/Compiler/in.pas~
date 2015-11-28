@@ -39,7 +39,7 @@ var
   end
   while i<=j;
  if i<h then t:=qsort(i,h);
- if j>l then t:=qsort(l,j,k);
+ if j>l then t:=qsort(l,j);
  qsort:=1
 end;
 begin

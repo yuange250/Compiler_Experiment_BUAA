@@ -35,7 +35,7 @@ var
   begin
    t:=a[i]; a[i]:=a[j]; a[j]:=t;
    i:=i+1; j:=j-1
-  end;
+  end
   end
   while i<=j;
  if i<h then t:=qsort(i,h);
