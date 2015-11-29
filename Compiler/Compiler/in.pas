@@ -1,11 +1,11 @@
 const space='a';
 
 var n,ntemp,meanless,i:integer;
-    a:array[10] of integer;
+    a:array[6] of integer;
     ch:char;
 procedure input;
 begin
-   for n:=1 to 10
+   for n:=0 to 6
    do
       begin
       read(ntemp);
@@ -44,10 +44,9 @@ var
 end;
 begin
     input;
-    meanless:=qsort(1,10)*5;
+    meanless:=qsort(0,5)*5;
     for i:=1 to 10
     do
            write(a[i]);
-   write("haha!");
    read(i)
 end.

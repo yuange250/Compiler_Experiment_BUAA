@@ -292,7 +292,7 @@ void expression(string &result,string &result_type)
 		result_type = "charsym";
 	}
 }
-void condition()
+int condition(int flag)
 {
 	printf("now in condition\n");
 	int i;
@@ -304,15 +304,20 @@ void condition()
 	expression(src1,type);//我还是觉得条件语句并不需要检查类型的问题,'1'>'2'也是阔以的嘛
 	string compare_symbols[] = { "eql", "neq", "lss", "leq", "gtr", "geq", "" };
 	string oprs[] = { "JNE", "JEQ", "JGE", "JGR", "JLE", "JLS" };
+	string oprs2[] = { "JEQ", "JNE", "JLS", "JLE", "JGR", "JGE", "" };
 	if ((i = ifin(sym, compare_symbols)) != 0)
 	{
-		opr = oprs[i-1];
+		if (flag == 0)
+			opr = oprs[i - 1];
+		else
+			opr = oprs2[i-1];
 		getsym();
 		expression(src2,type);
 	}
 	else
 		error(22);
 	generate(opr, src1, src2, "");
+	return code_index - 1;
 }
 void statement()
 {
@@ -394,8 +399,7 @@ void statement()
 	{
 		printf("now in if_statement\n");
 		getsym();
-		int code_index_temp = code_index;//这儿需要回填跳转符号。
-		condition();
+		int code_index_temp = condition(0);//这儿需要回填跳转符号。
 		if (sym == "thensym")
 			getsym();
 		else
@@ -426,8 +430,7 @@ void statement()
 			getsym();
 		else
 			error(26);
-		int code_index_temp = code_index;
-		condition();
+		int code_index_temp=condition(1);
 		codes[code_index_temp].des = label;
 	}
 	else if (sym == "beginsym")
@@ -452,7 +455,7 @@ void statement()
 						error(0);
 					}
 
-					generate("READ","","",iden);
+					generate("READ","",id_table[pos].type,iden);
 				}
 				else
 					error(2);
@@ -486,7 +489,7 @@ void statement()
 			}
 			else
 				expression(des,type);//这儿也是不需要滴！
-			generate("WRITE","","",des);
+			generate("WRITE","",type,des);
 			if (sym != "rparen")
 				error(3);
 			getsym();

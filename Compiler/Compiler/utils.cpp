@@ -159,7 +159,7 @@ int get_the_variable(int posi,string name)
 			}
 		}
 		level--;
-		while (id_table[j].lev == level&&j>0&&level>0)
+		while (id_table[j].lev >= level&&j>0&&level>0)
 			j--;
 	}
 }
