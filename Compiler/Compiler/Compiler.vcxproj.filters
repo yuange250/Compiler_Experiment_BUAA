@@ -62,5 +62,8 @@
     <ClCompile Include="generate_mips.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="optimize.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

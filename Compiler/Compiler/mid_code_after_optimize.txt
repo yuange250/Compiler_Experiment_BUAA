@@ -1,0 +1,84 @@
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+PLABEL   input_1
+RETURN   
+STORE a 0 space
+LABEL   _Label0
+JGE 1 6 _Label1
+READ   ntemp
+PLABEL   input_1
+STORE a 1 ntemp
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+JGE 1 6 _Label1
+READ   ntemp
+STORE a 1 ntemp
+PLABEL   input_1
+STORE a 0 space
+ADD 1 1 n
+JMP   _Label0
+LABEL   _Label1
+PLABEL   input_1
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+JGE 1 6 _Label1
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+PLABEL   input_1
+STORE a 0 space
+RETURN   
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+PLABEL   input_1
+STORE a 0 space
+PLABEL   input_1
+STORE a 0 space
+LABEL   _Label0
+JGE 1 6 _Label1
+PLABEL   input_1
+STORE a 0 space
+RETURN   

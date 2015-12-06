@@ -25,9 +25,13 @@ int level = 0;//level呀
 int sp_addr = 0;//整个栈空间的地址交给这位
 int sp_piece_top = 0;
 int code_index = 0;
+
 int temp_var_num = 0;
 int label_num = 0;//标签命名，这个应该整个程序唯一。
 int function_num = 1;
+int string_num = 0;
+
+string string_pool[100];
 
 string a;
 char line[line_max] = { 0 };
@@ -102,17 +106,42 @@ void listcode();
 void generate(string opr, string src1, string src2, string des);
 void generatemips();
 void list_mips_code();
+void listcode2();
+void DAG_optimize();
 int main(int argc, char**argv)
 {
-	IN = fopen("in.pas", "r");
+	/*
+	map<int,char> vars_map;
+
+	for (int i = 0; i < 10; i++)
+	{
+		vars_map[i] = i + 'a';
+	}
+	
+	for (map<int, char>::iterator it = vars_map.begin(); it != vars_map.end(); it++)
+	{
+		cout << it->first << " " << it->second << endl;
+	}
+	map<int, char>::iterator it2 = vars_map.find(10);
+	if (it2==vars_map.end())
+	{
+		cout << "yes"<< endl;
+	}
+	*/
+	
+    IN = fopen("in.pas", "r");
 	init();
 	getsym();
 	block("MAIN",0);
+	generate("RETURN","","","");
 	printf("Analysis over!");
 	listcode();
-	generatemips();
-	list_mips_code();
+	//generatemips();
+	//list_mips_code();
+	DAG_optimize();
+	listcode2();
 	getchar();
 	return 0;
+	
 }
 

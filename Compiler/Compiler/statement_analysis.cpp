@@ -15,6 +15,7 @@ int check_func_assign_ifOK(string id);
 string generate_label();
 string generate_func_proc_label(string name, int code);
 void array_ident(string &result);
+string generate_string_Label(int string_num_);
 void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 	string result;
 	string type;
@@ -32,6 +33,11 @@ void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 					{
 						error(0);
 						expression(result, type);
+					}
+					else if (id_table[posi].obj == "const")
+					{
+						error(46);
+						getsym();
 					}
 					else if (id_table[posi].type == "integersym"&&id_table[posi].type == "charsym")
 					{
@@ -100,14 +106,12 @@ void array_ident(string &result)
 	}
 }
 void factor(string &result, string &result_type){
-	printf("now in factor\n");
+//	printf("now in factor\n");
 	int i = 0;
 	//	test(facbegsys,fsys,24);
 	//string correctsymbols[] = { "ident", "ifsym", "dosym", "beginsym", "readsym", "writesym", "forsym", "" };
 	string continuesymbols[] = { "semicolon", "endsym", "times", "plus", "slash", "minus", "eql", "neq", "lss", "leq", "gtr", "geq", "thensym","tosym","downtosym","rparen","rbracket","dosym","whilesym","comma","elsesym","" };
 	test(facbegsys, continuesymbols, 36);
-	while (ifin(sym, facbegsys))
-	{
 		if (sym == "ident")
 		{
 			int posi = position(iden);
@@ -184,12 +188,11 @@ void factor(string &result, string &result_type){
 				error(3);
 			}
 		}
-		test(continuesymbols, facbegsys, 41);
-	}
+	test(continuesymbols, facbegsys, 41);
 }
 void term(string &result,string &result_type)
 {
-	printf("now in term\n");
+//	printf("now in term\n");
 	string src1;
 	string src2;
 	string des;
@@ -248,7 +251,7 @@ void expression(string &result,string &result_type)
 	bool symbol_flag = false;
 	bool type_sure_flag = false;
 
-	printf("now in expression\n");
+//	printf("now in expression\n");
 	if (sym == "plus" || sym == "minus")
 	{
 		if (sym == "minus")
@@ -294,7 +297,7 @@ void expression(string &result,string &result_type)
 }
 int condition(int flag)
 {
-	printf("now in condition\n");
+//	printf("now in condition\n");
 	int i;
 	string src1;
 	string src2;
@@ -324,7 +327,7 @@ void statement()
 	string correctsymbols[] = { "ident", "ifsym", "dosym","beginsym","readsym","writesym","forsym",""};
 	string continuesymbols[] = { "semicolon","endsym","" };
 	test(correctsymbols, continuesymbols, 39);
-	printf("now in statement\n");
+//	printf("now in statement\n");
 	if (sym == "ident")
 	{
 		string src1;
@@ -342,7 +345,7 @@ void statement()
 		if (id_table[pos].obj == "procedure")
 		{
 			des = id_table[pos].name;
-			printf("now in call_statement\n");
+//			printf("now in call_statement\n");
 			generate("CALL", generate_func_proc_label(id_table[pos].name, id_table[pos].param_list->function_code), "", "");
 			getsym();
 			function_params(pos);
@@ -361,6 +364,10 @@ void statement()
 			}
 			else if (id_table[pos].type == "integersym" || id_table[pos].type == "charsym")
 			{
+				if (id_table[pos].obj == "const")
+				{
+					error(45);
+				}
 				des = id_table[pos].name;
 				if (id_table[pos].obj=="function"&&!check_func_assign_ifOK(des))
 				{
@@ -371,13 +378,14 @@ void statement()
 			{
 				error(12);//此处需要报警
 			}
-			printf("now in assign_statement\n");
+	//		printf("now in assign_statement\n");
 			getsym();
 			if (sym == "becomes")
 				getsym();
 			else
 				error(24);
-			
+			string continuesymbols2[] = { "" };
+			test(facbegsys, continuesymbols2, 36);
 			if (id_table[pos].type == "array")
 			{
 				expression(des,type);
@@ -397,7 +405,7 @@ void statement()
 	}
 	else if (sym == "ifsym")
 	{
-		printf("now in if_statement\n");
+//		printf("now in if_statement\n");
 		getsym();
 		int code_index_temp = condition(0);//这儿需要回填跳转符号。
 		if (sym == "thensym")
@@ -421,7 +429,7 @@ void statement()
 	}
 	else if (sym == "dosym")
 	{
-		printf("now in dowhilestatement\n");
+//		printf("now in dowhilestatement\n");
 		string label = generate_label();
 		generate("LABEL", "", "", label);
 		getsym();
@@ -435,12 +443,12 @@ void statement()
 	}
 	else if (sym == "beginsym")
 	{
-		printf("now in begin_statement\n");
+//		printf("now in begin_statement\n");
 		multi_statement();
 	}
 	else if (sym == "readsym")
 	{
-		printf("now in readstatement\n");
+//		printf("now in readstatement\n");
 		getsym();
 		if (sym == "lparen")
 		{
@@ -470,7 +478,7 @@ void statement()
 	}
 	else if (sym == "writesym")
 	{
-		printf("now in writestatement\n");
+//		printf("now in writestatement\n");
 		getsym();
 		string des;
 		string type;
@@ -479,7 +487,9 @@ void statement()
 			getsym();
 			if (sym == "string")//感觉string需要进行特殊处理啊！！！！！！！这儿需要回来再想！
 			{
-
+				string_pool[string_num] = iden;
+				generate("WRITE", "", "string", generate_string_Label(string_num));
+				string_num++;
 				getsym();
 				if (sym == "comma")
 				{
@@ -499,7 +509,7 @@ void statement()
 	}
 	else if (sym == "forsym")
 	{
-		printf("now in forstatement\n");
+//		printf("now in forstatement\n");
 		getsym();
 		string src1;
 		string src2;
@@ -539,7 +549,11 @@ void statement()
 		}
 		else
 			error(27);
-
+		int code_index_temp = code_index;
+		if (opr=="ADD")
+			generate("JGE", des, src2, "");
+		else
+			generate("JLE", des, src2, "");
 		if (sym == "dosym")
 		{
 			getsym();
@@ -550,7 +564,10 @@ void statement()
 			error(28);
 		}
 		generate(opr,des,"1",des);
-		generate("JNE",des,src2,label);
+		generate("JMP","","",label);
+		string label2 = generate_label();
+		generate("LABEL", "", "", label2);
+		codes[code_index_temp].des = label2;
 	}
 	string correctsymbols2[] = { "semicolon", "endsym", "whilesym","elsesym","" };
 	string continuesymbols2[] = { "" };

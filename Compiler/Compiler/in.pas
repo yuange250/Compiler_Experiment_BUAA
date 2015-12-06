@@ -5,7 +5,8 @@ var n,ntemp,meanless,i:integer;
     ch:char;
 procedure input;
 begin
-   for n:=0 to 6
+   a[0]:=space;
+   for n:=1 to 6
    do
       begin
       read(ntemp);
@@ -23,13 +24,25 @@ var
  i:=i-1;
 
  do
-   i:=i+1
+   begin
+   i:=i+1;
+   if i>h then
+	   t:=m
+          else
+           t:=a[i]
+   end
  while a[i]<m;
 
  j:=j+1;
  do
-   j:=j-1
- while m<a[j];
+   begin
+   j:=j-1;
+   if j>=l then
+           t:=a[j]
+   else
+	   t:=m
+   end	   
+ while m<t;
 
  if i<=j then
   begin
@@ -45,8 +58,8 @@ end;
 begin
     input;
     meanless:=qsort(0,5)*5;
-    for i:=1 to 10
+    for i:=0 to 6
     do
-           write(a[i]);
+           write(" ",a[i]);
    read(i)
 end.

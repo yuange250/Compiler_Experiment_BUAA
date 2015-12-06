@@ -15,10 +15,10 @@ void enter(string type)//·ÏÆúµÄ¿ó¿Ó
 	id_table[tx].name = iden;
 	id_table[tx].obj = type;
 }
-void enter_const()//Ïò·ûºÅ±íÖĞµÇÂ½³£Êı£¬ºÜ¼òµ¥£¬Í¬Ê±½«Öµ´æ½øÈ¥
+void enter_const(string name_)//Ïò·ûºÅ±íÖĞµÇÂ½³£Êı£¬ºÜ¼òµ¥£¬Í¬Ê±½«Öµ´æ½øÈ¥
 {
 	tx++;
-	id_table[tx].name = iden;
+	id_table[tx].name = name_;
 	if (sym == "uinteger")
 	{
 		id_table[tx].type = "integersym";
@@ -39,12 +39,14 @@ void enter_const()//Ïò·ûºÅ±íÖĞµÇÂ½³£Êı£¬ºÜ¼òµ¥£¬Í¬Ê±½«Öµ´æ½øÈ¥
 }
 void const_declaration()//ÕâÓëÏÂÃæËùÓĞdeclarationÀàËÆ,¶¼ÊÇµİ¹éÏÂ½µµÄÒ»²¿·Ö£¬³ÌĞò·ÖÎöµÄÊ±ºò£¬Åöµ½const¾Í½øÈëÕâ¸öº¯Êı
 {
-	printf("now in constdeclaration\n");
+//	printf("now in constdeclaration\n");
+	string name;
 	bool minus_symbol = false;
 	do
 	{
 		if (sym == "ident")
 		{
+			name = iden;
 			getsym();
 			if (sym == "eql" || sym == "becomes")
 			{
@@ -65,7 +67,7 @@ void const_declaration()//ÕâÓëÏÂÃæËùÓĞdeclarationÀàËÆ,¶¼ÊÇµİ¹éÏÂ½µµÄÒ»²¿·Ö£¬³ÌĞò
 					{
 						error(1);
 					}
-					enter_const();
+					enter_const(name);
 					getsym();
 				}
 				else
@@ -122,7 +124,7 @@ void enter_array(string type,int size,int tx_start)//±äÁ¿ÀàĞÍÊÇÊı×éµÄÇé¿ö¡£ÉÔÎ¢Ó
 }
 void variable_declaration()
 {
-	printf("now in variableblock\n");
+//	printf("now in variableblock\n");
 	do{
 		int curren_index = tx;//ÏÈ¼Ç×¡µ±Ç°·ûºÅ±íµÄÎ»ÖÃ
 		if (sym == "ident")
@@ -221,7 +223,7 @@ void enter_function()//ÌîÈëfunctionµÄ»ù±¾ĞÅÏ¢
 }
 void enter_func_parameters()//º¯Êı²ÎÊı£¬ÌîÈë½øparam_listÖ¸ÕëËùÖ¸µÄ¿Õ¼ä£¬
 {
-	printf("now in func_parameter\n");
+//	printf("now in func_parameter\n");
 	id_table[tx].param_list->param_num=0;
 	int current_tx = tx;
 	int bottom_index = 0;
@@ -290,7 +292,7 @@ void enter_func_parameters()//º¯Êı²ÎÊı£¬ÌîÈë½øparam_listÖ¸ÕëËùÖ¸µÄ¿Õ¼ä£¬
 
 void function_declaration()
 {//º¯ÊıÉùÃ÷²¿·Ö
-	printf("now in funcdeclaration\n");
+//	printf("now in funcdeclaration\n");
 	if (sym == "ident")
 	{
 		if (check_var_ifexist(iden) != 0)
@@ -354,7 +356,7 @@ void enter_procedure()
 }
 void procedure_declaration()
 {//º¯ÊıÓë¹ı³ÌµÄÇø±ğÔÚÓÚÃ»ÓĞ·µ»ØÖµ¶øÒÑ
-	printf("now in proceduredeclaration\n");
+//	printf("now in proceduredeclaration\n");
 	if (sym == "ident")
 	{
 		if (check_var_ifexist(iden) != 0)

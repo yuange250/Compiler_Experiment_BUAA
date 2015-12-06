@@ -67,3 +67,5 @@ extern int temp_var_num;
 extern int label_num;
 extern int ln;//linenum
 extern int function_num;
+extern int string_num;
+extern string string_pool[100];

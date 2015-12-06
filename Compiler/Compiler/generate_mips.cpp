@@ -6,6 +6,7 @@ int aim_code_num = 0;
 int find_func_proc_position(string label);
 int get_the_variable(int posi, string name);
 string int_to_string(int num);
+string generate_string_Label(int string_num_);
 void excute_id_table()
 {
 	for (int i = 1; i <= tx; )
@@ -15,6 +16,8 @@ void excute_id_table()
 		int current_addr = (4 + id_table[j].lev-1) * 4;
 		for (; id_table[j].obj != "function"&&id_table[j].obj != "procedure"&&j <= tx; j++)
 		{
+			if (id_table[j].obj == "const")
+				continue;
 			id_table[j].adr = current_addr;
 			if (id_table[j].type == "charsym" || id_table[j].type == "integersym")
 				current_addr += 4;
@@ -41,6 +44,7 @@ void generatemips()
 {
 	generate_aim_code("jal","MAIN_0","","");
 	excute_id_table();
+
 
 	for (int i = 0; i < code_index;)
 	{
@@ -89,7 +93,7 @@ void generatemips()
 					generate_aim_code("sw", "$fp", "$sp", int_to_string(call_sp_dcrease));
 					call_sp_dcrease -= 4;
 		//			generate_aim_code("sw", "$ra", "$sp", int_to_string(call_sp_dcrease));
-					for (int k = 0; k < (id_table[func_posi].lev-1)&&k<(id_table[func_posi].lev-1); k++)
+					for (int k = 0; k < id_table[func_posi].lev&&k<id_table[call_func_posi].lev; k++)
 					{
 						call_sp_dcrease -= 4;
 						generate_aim_code("lw", "$t0", "$fp", int_to_string(call_sp_dcrease));
@@ -145,62 +149,71 @@ void generatemips()
 				}
 				else if (codes[i].opr == "WRITE")
 				{
-					if (codes[i].src2 == "integersym")
-						generate_aim_code("li", "$v0", "1", "");
-
-					else if (codes[i].src2 == "charsym")
-						generate_aim_code("li", "$v0", "11", "");
-					
-
-					if (codes[i].des!=""&&(codes[i].des.at(0) != '%' && (codes[i].des.at(0) < '0' || codes[i].des.at(0) > '9')))//Store/load的des，我现在只需要将它的地址放在哪儿就好
+					if (codes[i].src2 == "string")
 					{
-						int var_posi = get_the_variable(func_posi, codes[i].des);//查找到变量在符号表中的位置
+						generate_aim_code("la","$a0",codes[i].des,"");
+						generate_aim_code("li","$v0","4","");
+						generate_aim_code("syscall","","","");
+					}
+					else
+					{
+						if (codes[i].src2 == "integersym")
+							generate_aim_code("li", "$v0", "1", "");
 
-						if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
+						else if (codes[i].src2 == "charsym")
+							generate_aim_code("li", "$v0", "11", "");
+
+
+						if (codes[i].des != "" && (codes[i].des.at(0) != '%' && (codes[i].des.at(0) < '0' || codes[i].des.at(0) > '9')))//Store/load的des，我现在只需要将它的地址放在哪儿就好
 						{
-							//                      generate_aim_code("lw", "$t1", "$fp", int_to_string(-id_table[var_posi].adr));
-							if (id_table[var_posi].addr_or_value)
+							int var_posi = get_the_variable(func_posi, codes[i].des);//查找到变量在符号表中的位置
+
+							if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
 							{
-								generate_aim_code("lw", "$a0", "$fp", int_to_string(-id_table[var_posi].adr));
-								generate_aim_code("lw", "$a0", "$a0", "0");
+								//                      generate_aim_code("lw", "$t1", "$fp", int_to_string(-id_table[var_posi].adr));
+								if (id_table[var_posi].addr_or_value)
+								{
+									generate_aim_code("lw", "$a0", "$fp", int_to_string(-id_table[var_posi].adr));
+									generate_aim_code("lw", "$a0", "$a0", "0");
+								}
+								else
+								{
+									generate_aim_code("lw", "$a0", "$fp", int_to_string(-id_table[var_posi].adr));
+								}
 							}
 							else
 							{
-								generate_aim_code("lw", "$a0", "$fp", int_to_string(-id_table[var_posi].adr));
+								generate_aim_code("lw", "$t1", "$fp", int_to_string(-(4 + id_table[var_posi].lev - 1) * 4));
+								if (id_table[var_posi].addr_or_value)
+								{
+									generate_aim_code("lw", "$a0", "$t1", int_to_string(-id_table[var_posi].adr));
+									generate_aim_code("lw", "$a0", "$a0", "0");
+								}
+								else
+								{
+									generate_aim_code("lw", "$a0", "$t1", int_to_string(-id_table[var_posi].adr));
+								}
 							}
 						}
 						else
 						{
-							generate_aim_code("lw", "$t1", "$fp", int_to_string(-(4 + id_table[var_posi].lev - 1) * 4));
-							if (id_table[var_posi].addr_or_value)
+							string temp_num_str;
+							for (int k = 1; k < codes[i].des.size(); k++)
 							{
-								generate_aim_code("lw", "$a0", "$t1", int_to_string(-id_table[var_posi].adr));
-								generate_aim_code("lw", "$a0", "$a0", "0");
+								temp_num_str.append(1, codes[i].des.at(k));
 							}
-							else
+							int temp_num = atoi(temp_num_str.c_str());
+							if (temp_variables[temp_num] == 0)
 							{
-								generate_aim_code("lw", "$a0", "$t1", int_to_string(-id_table[var_posi].adr));
+								temp_variables[temp_num] = fp_offsite;
+								fp_offsite += 4;
+								if (fp_offsite >= 500)
+									generate_aim_code("subi", "$sp", "$sp", "4");
 							}
+							generate_aim_code("lw", "$a0", "$fp", int_to_string(-temp_variables[temp_num]));
 						}
+						generate_aim_code("syscall", "", "", "");
 					}
-					else
-					{
-						string temp_num_str;
-						for (int k = 1; k < codes[i].des.size(); k++)
-						{
-							temp_num_str.append(1, codes[i].des.at(k));
-						}
-						int temp_num = atoi(temp_num_str.c_str());
-						if (temp_variables[temp_num] == 0)
-						{
-							temp_variables[temp_num] = fp_offsite;
-							fp_offsite += 4;
-							if (fp_offsite >= 500)
-								generate_aim_code("subi", "$sp", "$sp", "4");
-						}
-						generate_aim_code("lw", "$a0", "$fp", int_to_string(-temp_variables[temp_num]));
-					}
-					generate_aim_code("syscall", "", "", "");
 				}
 				else if (codes[i].opr=="STORE"||codes[i].opr=="LOAD")
 				{
@@ -218,7 +231,11 @@ void generatemips()
 					if (codes[i].src2.at(0) != '%' && (codes[i].src2.at(0) < '0' || codes[i].src2.at(0) > '9'))
 					{
 						int var_posi = get_the_variable(func_posi, codes[i].src2);//查找到变量在符号表中的位置
-						if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
+						if (id_table[var_posi].obj == "const")
+						{
+							generate_aim_code("li", "$t1", int_to_string(id_table[var_posi].value), "");
+						}
+						else if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
 						{
 							generate_aim_code("lw", "$t1", "$fp", int_to_string(-id_table[var_posi].adr));
 							if (id_table[var_posi].addr_or_value)
@@ -258,13 +275,17 @@ void generatemips()
 
 				    generate_aim_code("add", "$t2", "$t0", "$t1");
 
-
+					bool store_const = false;
 
 					if (codes[i].des.at(0) != '%' && (codes[i].des.at(0) < '0' || codes[i].des.at(0) > '9'))//Store/load的des，我现在只需要将它的地址放在哪儿就好
 					{
 						int var_posi = get_the_variable(func_posi, codes[i].des);//查找到变量在符号表中的位置
-
-						if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
+						if (id_table[var_posi].obj == "const")
+						{
+							store_const = true;
+							generate_aim_code("li", "$t1", int_to_string(id_table[var_posi].value), "");
+						}
+						else if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
 						{
 							//                      generate_aim_code("lw", "$t1", "$fp", int_to_string(-id_table[var_posi].adr));
 							if (id_table[var_posi].addr_or_value)
@@ -310,9 +331,13 @@ void generatemips()
 					}
 					if (codes[i].opr == "STORE")
 					{
-						
-						generate_aim_code("lw","$t0","$t1","0");
-						generate_aim_code("sw","$t0","$t2","0");
+						if (!store_const)
+						{
+							generate_aim_code("lw", "$t0", "$t1", "0");
+							generate_aim_code("sw", "$t0", "$t2", "0");
+						}
+						else
+							generate_aim_code("sw", "$t1", "$t2", "0");
 					}
 					else
 					{
@@ -327,7 +352,11 @@ void generatemips()
 						if (codes[i].src1.at(0) != '%'&&codes[i].src1.at(0) != '@' && (codes[i].src1.at(0) < '0' || codes[i].src1.at(0) > '9'))
 						{
 							int var_posi = get_the_variable(func_posi, codes[i].src1);//查找到变量在符号表中的位置
-							if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
+							if (id_table[var_posi].obj == "const")
+							{
+								generate_aim_code("li", "$t0", int_to_string(id_table[var_posi].value), "");
+							}
+							else if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
 							{
 								generate_aim_code("lw", "$t0", "$fp", int_to_string(-id_table[var_posi].adr));
 								if (id_table[var_posi].addr_or_value)
@@ -373,7 +402,11 @@ void generatemips()
 						if (codes[i].src2.at(0) != '%'&&(codes[i].src2.at(0) < '0' || codes[i].src2.at(0) > '9'))
 						{
 							int var_posi = get_the_variable(func_posi, codes[i].src2);//查找到变量在符号表中的位置
-							if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
+							if (id_table[var_posi].obj == "const")
+							{
+								generate_aim_code("li", "$t1", int_to_string(id_table[var_posi].value), "");
+							}
+							else if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
 							{
 								generate_aim_code("lw", "$t1", "$fp", int_to_string(-id_table[var_posi].adr));
 								if (id_table[var_posi].addr_or_value)
@@ -600,7 +633,13 @@ void generatemips()
 }
 void list_mips_code()
 {
-	ofstream fout("aim_code.asm");
+	ofstream fout("qsort_aim_code.asm");
+	fout << ".data" << endl;
+	for (int i = 0; i < string_num; i++)
+	{
+		fout << generate_string_Label(i) << ": " << ".asciiz" << " \"" << string_pool[i]<<"\""<<endl;
+	}
+	fout << ".text" << endl;
 	for (int i = 0; i < aim_code_num; i++)
 	{
 		
@@ -616,9 +655,9 @@ void list_mips_code()
 		{
 			fout << aim_codes[i].opr << " " << aim_codes[i].des << "," << aim_codes[i].src2 << "(" << aim_codes[i].src1<<")"<<endl;
 		}
-		else if (aim_codes[i].opr == "li")
+		else if (aim_codes[i].opr == "li" || aim_codes[i].opr == "la")
 		{
-			fout << "li" << " " << aim_codes[i].des << "," << aim_codes[i].src1<<endl;
+			fout << aim_codes[i].opr << " " << aim_codes[i].des << "," << aim_codes[i].src1<<endl;
 		}
 		else if (aim_codes[i].opr == "LABEL")
 		{

@@ -36,7 +36,7 @@ void block(string func_name,int code)
 {
 	temp_var_num = 0;
 	level++;
-	printf("now in block\n");
+//	printf("now in block\n");
 	do{
 		if (sym == "constsym")
 		{

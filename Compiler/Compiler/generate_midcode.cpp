@@ -21,6 +21,12 @@ string generate_label()
 	label_num++;
 	return "_Label" + ss.str();
 }
+string generate_string_Label(int string_num_)
+{
+	stringstream ss;
+	ss << string_num_;
+	return "_Str_" + ss.str();
+}
 string generate_func_proc_label(string name,int code)
 {
 	stringstream ss;
@@ -34,5 +40,13 @@ void listcode()
 	for (int i = 0; i < code_index; i++)
 	{
 		fout<<codes[i].opr<<" "<<codes[i].src1<<" "<<codes[i].src2<<" "<<codes[i].des<<endl;
+	}
+}
+void listcode2()
+{
+	ofstream fout("mid_code_after_optimize.txt");
+	for (int i = 0; i < code_index; i++)
+	{
+		fout << codes[i].opr << " " << codes[i].src1 << " " << codes[i].src2 << " " << codes[i].des << endl;
 	}
 }

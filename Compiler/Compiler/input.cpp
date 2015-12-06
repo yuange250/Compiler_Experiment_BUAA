@@ -204,7 +204,7 @@ void getsym()
 			}
 			getch();
 		}
-		a.append(1,'\0');
+	//	a.append(1,'\0');
 		iden = a;
 		sym = "string";
 //		cout << sym + "," << iden << endl;
