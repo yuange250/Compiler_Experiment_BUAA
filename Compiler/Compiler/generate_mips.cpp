@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "globals.h"
-ofstream fout("test.asm");
+//ofstream fout("test.asm");
 struct code aim_codes[2000];
 int aim_code_num = 0;
 int find_func_proc_position(string label);
@@ -58,10 +58,13 @@ void generatemips()
 			int call_sp_dcrease = 0;
 	//		
 			int j;
-			for (j = func_posi+1; id_table[j].obj == "const" || id_table[j].obj == "var"; j++)
-			{}
-			j--;
 			int fp_offsite;
+			for (j = func_posi + 1; id_table[j].obj == "const" || id_table[j].obj == "var"; j++)
+			{
+			}
+			while (id_table[j].obj != "var"&&j!=func_posi)
+			j--;
+			
 			if (j == func_posi)
 				fp_offsite = (4 + id_table[func_posi].lev) * 4;
 			else
@@ -111,18 +114,68 @@ void generatemips()
 					{
 
 						int var_posi = get_the_variable(func_posi, codes[i].src1);//查找到变量在符号表中的位置
+						
 						if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
 						{
 							generate_aim_code("addi", "$t0", "$fp", int_to_string(-id_table[var_posi].adr));
-							generate_aim_code("addi","$t2","$t0",codes[i].src2);
+							
 						}
 						else
 						{
 							generate_aim_code("lw", "$t0", "$fp", int_to_string(-(4 + id_table[var_posi].lev - 1) * 4));
 							generate_aim_code("addi", "$t0", "$t0", int_to_string(-id_table[var_posi].adr));
-							generate_aim_code("addi", "$t2", "$t0", codes[i].src2);
+					//		generate_aim_code("addi", "$t2", "$t0", codes[i].src2);
+						}
+						if (id_table[var_posi].addr_or_value)
+						{
+							generate_aim_code("lw", "$t0", "$t0", "0");
 						}
 					}
+					if (codes[i].src2.at(0) >= '0'&&codes[i].src2.at(0) <= '9')
+					{
+						generate_aim_code("li", "$t1",codes[i].src2,"");
+					}
+					else  if (codes[i].src2.at(0) == '%')
+					{
+						string temp_num_str;
+						for (int k = 1; k < codes[i].src2.size(); k++)
+						{
+							temp_num_str.append(1, codes[i].src2.at(k));
+						}
+						int temp_num = atoi(temp_num_str.c_str());
+						if (temp_variables[temp_num] == 0)
+						{
+							temp_variables[temp_num] = fp_offsite;
+							fp_offsite += 4;
+							if (fp_offsite >= 500)
+								generate_aim_code("subi", "$sp", "$sp", "4");
+						}
+						generate_aim_code("lw", "$t1", "$fp", int_to_string(-temp_variables[temp_num]));
+						
+					}
+					else
+					{
+						int var_posi = get_the_variable(func_posi, codes[i].src2);//查找到变量在符号表中的位置
+						if (id_table[var_posi].obj == "const")
+						{
+							generate_aim_code("li", "$t1", int_to_string(id_table[var_posi].value), "");
+						}
+						else if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
+						{
+							generate_aim_code("lw", "$t1", "$fp", int_to_string(-id_table[var_posi].adr));
+							if (id_table[var_posi].addr_or_value)
+								generate_aim_code("lw", "$t1", "$t1", "0");
+						}
+						else
+						{
+							generate_aim_code("lw", "$t1", "$fp", int_to_string(-(4 + id_table[var_posi].lev - 1) * 4));
+							generate_aim_code("lw", "$t1", "$t1", int_to_string(-id_table[var_posi].adr));
+							if (id_table[var_posi].addr_or_value)
+								generate_aim_code("lw", "$t1", "$t1", "0");
+						}
+					}
+					generate_aim_code("sll", "$t1", "$t1", "2");
+					generate_aim_code("sub", "$t2", "$t0", "$t1");
 					call_sp_dcrease -= 4;
 					generate_aim_code("sw", "$t2", "$sp", int_to_string(call_sp_dcrease));
 				}
@@ -168,7 +221,11 @@ void generatemips()
 						{
 							int var_posi = get_the_variable(func_posi, codes[i].des);//查找到变量在符号表中的位置
 
-							if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
+							if (id_table[var_posi].obj == "const")
+							{
+								generate_aim_code("li","$a0",int_to_string(id_table[var_posi].value),"");
+							}
+							else if (id_table[var_posi].lev == (id_table[func_posi].lev + 1))
 							{
 								//                      generate_aim_code("lw", "$t1", "$fp", int_to_string(-id_table[var_posi].adr));
 								if (id_table[var_posi].addr_or_value)
@@ -194,6 +251,10 @@ void generatemips()
 									generate_aim_code("lw", "$a0", "$t1", int_to_string(-id_table[var_posi].adr));
 								}
 							}
+						}
+						else if (codes[i].des.at(0) >= '0' && codes[i].des.at(0) <= '9')
+						{
+							generate_aim_code("li", "$a0", codes[i].des, "");
 						}
 						else
 						{
@@ -270,10 +331,10 @@ void generatemips()
 						}
 						generate_aim_code("lw", "$t1", "$fp", int_to_string(-temp_variables[temp_num]));
 					}
-				    generate_aim_code("mulo","$t1","$t1","-4");
+				    generate_aim_code("sll","$t1","$t1","2");
 //						generate_aim_code("addi", "$t2", "$t0", codes[i].src2);
-
-				    generate_aim_code("add", "$t2", "$t0", "$t1");
+//					generate_aim_code("sub","$t1","$zero","$t1");
+				    generate_aim_code("sub", "$t2", "$t0", "$t1");
 
 					bool store_const = false;
 
@@ -311,6 +372,11 @@ void generatemips()
 								generate_aim_code("addi", "$t1", "$t1", int_to_string(-id_table[var_posi].adr));
 							}
 						}
+					}
+					else if (codes[i].des.at(0) >= '0' && codes[i].des.at(0) <= '9')
+					{
+						generate_aim_code("li", "$t1", codes[i].des, "");
+						store_const = true;
 					}
 					else
 					{
@@ -474,10 +540,7 @@ void generatemips()
 					}
 					else if (codes[i].opr == "OPP")
 					{
-						if (imediate_num)
-							generate_aim_code("subi", "$t2", "$t0", codes[i].src2);
-						else
-							generate_aim_code("sub", "$t2", "$t0", "$t1");
+							generate_aim_code("sub", "$t2", "$zero", "$t0");
 					}
 					else if (codes[i].opr == "ASSIGN")
 					{
@@ -633,7 +696,7 @@ void generatemips()
 }
 void list_mips_code()
 {
-	ofstream fout("qsort_aim_code.asm");
+	ofstream fout("test.asm");
 	fout << ".data" << endl;
 	for (int i = 0; i < string_num; i++)
 	{
@@ -643,7 +706,7 @@ void list_mips_code()
 	for (int i = 0; i < aim_code_num; i++)
 	{
 		
-		if (aim_codes[i].opr == "addi" || aim_codes[i].opr == "subi" || aim_codes[i].opr == "mul" || aim_codes[i].opr == "mulo" || aim_codes[i].opr == "div" || aim_codes[i].opr == "add" || aim_codes[i].opr == "sub" )
+		if (aim_codes[i].opr == "addi" || aim_codes[i].opr == "subi" || aim_codes[i].opr == "mul" || aim_codes[i].opr == "mulo" || aim_codes[i].opr == "div" || aim_codes[i].opr == "add" || aim_codes[i].opr == "sub" ||aim_codes[i].opr=="sll")
 		{
 			fout << aim_codes[i].opr << " " << aim_codes[i].des << "," << aim_codes[i].src1 << "," << aim_codes[i].src2<<endl;
 		}

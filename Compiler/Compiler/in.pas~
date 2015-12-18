@@ -5,12 +5,13 @@ var n,ntemp,meanless,i:integer;
     ch:char;
 procedure input;
 begin
+   n:=2*ntemp+2*ntemp;
    a[0]:=space;
    for n:=1 to 6
    do
       begin
       read(ntemp);
-      a[n]:=ntemp
+      a[n]:=ntemp;
       end
 end;
 function qsort(l,h:integer):integer;
@@ -53,11 +54,11 @@ var
   while i<=j;
  if i<h then t:=qsort(i,h);
  if j>l then t:=qsort(l,j);
- qsort:=1
+ qsort:=1;
 end;
 begin
     input;
-    meanless:=qsort(0,5)*5;
+    meanless:=qsort(0,6)*5;
     for i:=0 to 6
     do
            write(" ",a[i]);

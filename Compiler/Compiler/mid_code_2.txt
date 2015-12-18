@@ -1,0 +1,103 @@
+PLABEL   input_1
+STORE a 0 space
+ASSIGN 1  n
+LABEL   _Label0
+JGE n 6 _Label1
+READ  integersym ntemp
+STORE a n ntemp
+ADD n 1 n
+JMP   _Label0
+LABEL   _Label1
+RETURN   
+PLABEL   qsort_2
+ASSIGN l  i
+ASSIGN h  j
+ADD i j %0
+DIV %0 2 %1
+LOAD a %1 %2
+ASSIGN %2  m
+LABEL   _Label2
+SUB i 1 %3
+ASSIGN %3  i
+LABEL   _Label3
+ADD i 1 %4
+ASSIGN %4  i
+JLE i h _Label4
+ASSIGN m  t
+JMP   _Label5
+LABEL   _Label4
+LOAD a i %5
+ASSIGN %5  t
+LABEL   _Label5
+LOAD a i %6
+JLS %6 m _Label3
+ADD j 1 %7
+ASSIGN %7  j
+LABEL   _Label6
+SUB j 1 %8
+ASSIGN %8  j
+JLS j l _Label7
+LOAD a j %9
+ASSIGN %9  t
+JMP   _Label8
+LABEL   _Label7
+ASSIGN m  t
+LABEL   _Label8
+JLS m t _Label6
+JGR i j _Label9
+LOAD a i %10
+ASSIGN %10  t
+LOAD a j %11
+STORE a i %11
+STORE a j t
+ADD i 1 %12
+ASSIGN %12  i
+SUB j 1 %13
+ASSIGN %13  j
+JMP   _Label10
+LABEL   _Label9
+LABEL   _Label10
+JLE i j _Label2
+JGE i h _Label11
+CALL qsort_2  
+PUSH i  
+PUSH h  
+JMP   qsort_2
+ASSIGN @  %14
+ASSIGN %14  t
+JMP   _Label12
+LABEL   _Label11
+LABEL   _Label12
+JLE j l _Label13
+CALL qsort_2  
+PUSH l  
+PUSH j  
+JMP   qsort_2
+ASSIGN @  %15
+ASSIGN %15  t
+JMP   _Label14
+LABEL   _Label13
+LABEL   _Label14
+ASSIGN 1  qsort
+RETURN   
+PLABEL   MAIN_0
+CALL input_1  
+JMP   input_1
+CALL qsort_2  
+PUSH 0  
+PUSH 5  
+JMP   qsort_2
+ASSIGN @  %16
+MUL %16 5 %17
+ASSIGN %17  meanless
+ASSIGN 0  i
+LABEL   _Label15
+JGE i 6 _Label16
+WRITE  string _Str_0
+LOAD a i %18
+WRITE  integersym %18
+ADD i 1 i
+JMP   _Label15
+LABEL   _Label16
+READ  integersym i
+RETURN   

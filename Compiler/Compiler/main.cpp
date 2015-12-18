@@ -35,8 +35,8 @@ string string_pool[100];
 
 string a;
 char line[line_max] = { 0 };
-string reser_word[] = { "begin", "call", "const", "do", "end", "if", "odd", "procedure", "read", "then", "var", "while", "write", "for", "down", "to", "function", "integer", "uinteger", "char", "of", "array","else","" };
-string wsym[] = { "beginsym", "callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym", "whilesym", "writesym", "forsym", "downsym", "tosym", "funcsym", "integersym", "uintegersym", "charsym", "ofsym", "arraysym","elsesym","" };//word symbols
+string reser_word[] = { "begin", "call", "const", "do", "end", "if", "odd", "procedure", "read", "then", "var", "while", "write", "for", "downto", "to", "function", "integer", "uinteger", "char", "of", "array","else","" };
+string wsym[] = { "beginsym", "callsym", "constsym", "dosym", "endsym", "ifsym", "oddsym", "procsym", "readsym", "thensym", "varsym", "whilesym", "writesym", "forsym", "downtosym", "tosym", "funcsym", "integersym", "uintegersym", "charsym", "ofsym", "arraysym","elsesym","" };//word symbols
 map<char, string> ssym;//+ - * / ( ) < >
 int tx = 0;//table index
 struct array_info{
@@ -108,6 +108,7 @@ void generatemips();
 void list_mips_code();
 void listcode2();
 void DAG_optimize();
+void sight_optimize();
 int main(int argc, char**argv)
 {
 	/*
@@ -129,17 +130,19 @@ int main(int argc, char**argv)
 	}
 	*/
 	
-    IN = fopen("in.pas", "r");
+    IN = fopen("lyh.txt", "r");
 	init();
 	getsym();
 	block("MAIN",0);
-	generate("RETURN","","","");
+//	generate("RETURN","","","");
 	printf("Analysis over!");
+	sight_optimize();
 	listcode();
-	//generatemips();
-	//list_mips_code();
-	DAG_optimize();
-	listcode2();
+
+	//DAG_optimize();
+	//listcode2();
+	generatemips();
+	list_mips_code();
 	getchar();
 	return 0;
 	

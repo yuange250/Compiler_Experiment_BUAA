@@ -1,122 +1,258 @@
-PLABEL   input_1
-STORE a 0 space
-ASSIGN 1  n
-
+PLABEL   Abs_1
+JGE x 0 _Label0
+OPP x  x
+JMP   _Label1
 LABEL   _Label0
-JGE n 6 _Label1
-
-READ  integersym ntemp
-STORE a n ntemp
-ADD n 1 n
-JMP   _Label0
-
-
 LABEL   _Label1
-RETURN
-   
-PLABEL   qsort_2
-ASSIGN l  i
-ASSIGN h  j
-ADD i j %0
-DIV %0 2 %1
-LOAD a %1 %2
-ASSIGN %2  m
-
+JGE y 0 _Label2
+OPP y  y
+JMP   _Label3
 LABEL   _Label2
-SUB i 1 %3
-ASSIGN %3  i
-
 LABEL   _Label3
-ADD i 1 %4
-ASSIGN %4  i
-JLE i h _Label4
-
-ASSIGN m  t
-JMP   _Label5
-
-LABEL   _Label4
-LOAD a i %5
-ASSIGN %5  t
-
-LABEL   _Label5
-LOAD a i %6
-JLS %6 m _Label3
-
-ADD j 1 %7
-ASSIGN %7  j
-
-LABEL   _Label6
-SUB j 1 %8
-ASSIGN %8  j
-
-JLS j l _Label7
-LOAD a j %9
-ASSIGN %9  t
-JMP   _Label8
-
-LABEL   _Label7
-ASSIGN m  t
-LABEL   _Label8
-JLS m t _Label6
-JGR i j _Label9
-LOAD a i %10
-ASSIGN %10  t
-LOAD a j %11
-STORE a i %11
-STORE a j t
-ADD i 1 %12
-ASSIGN %12  i
-SUB j 1 %13
-ASSIGN %13  j
-JMP   _Label10
-LABEL   _Label9
-LABEL   _Label10
-JLE i j _Label2
-JGE i h _Label11
-CALL qsort_2  
-PUSH i  
-PUSH h  
-JMP   qsort_2
-ASSIGN @  %14
-ASSIGN %14  t
-JMP   _Label12
-LABEL   _Label11
-LABEL   _Label12
-JLE j l _Label13
-CALL qsort_2  
-PUSH l  
-PUSH j  
-JMP   qsort_2
-ASSIGN @  %15
-ASSIGN %15  t
-JMP   _Label14
-LABEL   _Label13
-LABEL   _Label14
-ASSIGN 1  qsort
-RETURN   
-
-PLABEL   MAIN_0
-CALL input_1  
-JMP   input_1
-
-CALL qsort_2  
-PUSH 0  
-PUSH 5  
-JMP   qsort_2
-
-ASSIGN @  %16
-MUL %16 5 %17
-ASSIGN %17  meanless
-ASSIGN 0  i
-
-LABEL   _Label15
-JGE i 6 _Label16
-
 WRITE  string _Str_0
-LOAD a i %18
+WRITE  string _Str_1
+RETURN   
+PLABEL   Abs1_2
+JGE x 0 _Label4
+OPP x  result
+JMP   _Label5
+LABEL   _Label4
+ASSIGN x  result
+LABEL   _Label5
+ASSIGN result  x
+RETURN   
+PLABEL   Abs2_3
+JGE x 0 _Label6
+OPP x  result
+JMP   _Label7
+LABEL   _Label6
+ASSIGN x  result
+LABEL   _Label7
+ASSIGN result  x
+RETURN   
+PLABEL   Sub_4
+SUB x y Sub
+RETURN   
+PLABEL   test_6
+ASSIGN d  cp
+RETURN   
+PLABEL   Swap_5
+WRITE  string _Str_2
+WRITE  string _Str_3
+WRITE  integersym x
+WRITE  string _Str_4
+WRITE  string _Str_5
+WRITE  integersym y
+WRITE  string _Str_6
+ASSIGN x  swap
+ASSIGN y  x
+ASSIGN swap  y
+RETURN   
+PLABEL   swap_7
+WRITE  string _Str_7
+WRITE  string _Str_8
+WRITE  integersym x
+WRITE  string _Str_9
+WRITE  string _Str_10
+WRITE  integersym y
+WRITE  string _Str_11
+ASSIGN x  t
+ASSIGN y  x
+ASSIGN t  y
+RETURN   
+PLABEL   Reverse_8
+JGE lever 5 _Label8
+WRITE  string _Str_12
+WRITE  integersym lever
+WRITE  string _Str_13
+WRITE  string _Str_14
+SUB 9 lever %0
+LOAD i %0 %1
+WRITE  integersym %1
+WRITE  string _Str_15
+WRITE  string _Str_16
+LOAD i lever %2
+WRITE  integersym %2
+WRITE  string _Str_17
+SUB 9 lever %3
+CALL Swap_5  
+PUSHA i lever 
+PUSHA i %3 
+JMP   Swap_5
+ADD lever 1 %4
+CALL Reverse_8  
+PUSH %4  
+JMP   Reverse_8
+JMP   _Label9
+LABEL   _Label8
+WRITE  string _Str_18
+LABEL   _Label9
+RETURN   
+PLABEL   MAIN_0
+ASSIGN a  f
+ADD f 5 g
+LABEL   _Label10
+STORE i f f
+ADD f 1 f
+JLS f g _Label10
+ASSIGN f  h
+LABEL   _Label11
+MUL 1 g %8
+ADD g %8 %7
+JGR h %7 _Label12
+STORE i h h
+ADD h 1 h
+JMP   _Label11
+LABEL   _Label12
+ASSIGN 5678  h
+WRITE  string _Str_19
+WRITE  string _Str_20
+LOAD i 0 %9
+WRITE  integersym %9
+WRITE  string _Str_21
+WRITE  string _Str_22
+LOAD i 1 %10
+WRITE  integersym %10
+WRITE  string _Str_23
+WRITE  string _Str_24
+LOAD i 2 %11
+WRITE  integersym %11
+WRITE  string _Str_25
+WRITE  string _Str_26
+LOAD i 3 %12
+WRITE  integersym %12
+WRITE  string _Str_27
+WRITE  string _Str_28
+LOAD i 4 %13
+WRITE  integersym %13
+WRITE  string _Str_29
+WRITE  string _Str_30
+LOAD i 5 %14
+WRITE  integersym %14
+WRITE  string _Str_31
+WRITE  string _Str_32
+LOAD i 6 %15
+WRITE  integersym %15
+WRITE  string _Str_33
+WRITE  string _Str_34
+LOAD i 7 %16
+WRITE  integersym %16
+WRITE  string _Str_35
+WRITE  string _Str_36
+LOAD i 8 %17
+WRITE  integersym %17
+WRITE  string _Str_37
+WRITE  string _Str_38
+LOAD i 9 %18
 WRITE  integersym %18
-ADD i 1 i
-JMP   _Label15
-
-LABEL   _Label16
-READ  integersym i
+WRITE  string _Str_39
+WRITE  string _Str_40
+CALL Reverse_8  
+PUSH 0  
+JMP   Reverse_8
+WRITE  string _Str_41
+READ  integersym f
+READ  integersym g
+WRITE  string _Str_42
+CALL Sub_4  
+PUSHA g 0 
+PUSHA f 0 
+JMP   Sub_4
+ASSIGN @  %19
+WRITE  integersym %19
+WRITE  string _Str_43
+CALL Sub_4  
+PUSHA f 0 
+PUSHA g 0 
+JMP   Sub_4
+ASSIGN @  %20
+ASSIGN %20  h
+WRITE  string _Str_44
+WRITE  integersym h
+WRITE  string _Str_45
+WRITE  string _Str_46
+WRITE  integersym f
+CALL Abs1_2  
+PUSHA f 0 
+JMP   Abs1_2
+WRITE  string _Str_47
+WRITE  string _Str_48
+WRITE  integersym f
+WRITE  string _Str_49
+WRITE  string _Str_50
+WRITE  integersym g
+WRITE  string _Str_51
+CALL Abs2_3  
+PUSH g  
+JMP   Abs2_3
+WRITE  string _Str_52
+WRITE  integersym g
+WRITE  string _Str_53
+CALL Swap_5  
+PUSHA f 0 
+PUSHA g 0 
+JMP   Swap_5
+WRITE  string _Str_54
+WRITE  integersym g
+WRITE  string _Str_55
+WRITE  string _Str_56
+WRITE  integersym f
+WRITE  string _Str_57
+OPP 20  f
+OPP 23  g
+WRITE  string _Str_58
+WRITE  integersym f
+WRITE  string _Str_59
+WRITE  integersym g
+WRITE  string _Str_60
+CALL Abs_1  
+PUSHA f 0 
+PUSH g  
+JMP   Abs_1
+WRITE  string _Str_61
+WRITE  integersym f
+WRITE  string _Str_62
+WRITE  integersym g
+WRITE  string _Str_63
+WRITE  string _Str_64
+ASSIGN 0  h
+WRITE  string _Str_65
+LOAD i 0 %23
+WRITE  integersym %23
+WRITE  string _Str_66
+WRITE  string _Str_67
+LOAD i 1 %24
+WRITE  integersym %24
+WRITE  string _Str_68
+WRITE  string _Str_69
+LOAD i 2 %25
+WRITE  integersym %25
+WRITE  string _Str_70
+WRITE  string _Str_71
+LOAD i 3 %26
+WRITE  integersym %26
+WRITE  string _Str_72
+WRITE  string _Str_73
+LOAD i 4 %27
+WRITE  integersym %27
+WRITE  string _Str_74
+WRITE  string _Str_75
+LOAD i 5 %28
+WRITE  integersym %28
+WRITE  string _Str_76
+WRITE  string _Str_77
+LOAD i 6 %29
+WRITE  integersym %29
+WRITE  string _Str_78
+WRITE  string _Str_79
+LOAD i 7 %30
+WRITE  integersym %30
+WRITE  string _Str_80
+WRITE  string _Str_81
+LOAD i 8 %31
+WRITE  integersym %31
+WRITE  string _Str_82
+WRITE  string _Str_83
+LOAD i 9 %32
+WRITE  integersym %32
+WRITE  string _Str_84

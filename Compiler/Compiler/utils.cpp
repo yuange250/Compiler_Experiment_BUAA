@@ -87,20 +87,21 @@ int position(string id){
 	}
 	return i;
 }
-int check_var_ifexist(string id)
+int check_var_ifexist(string id,int level_temp)
 {
 	int i = 0;
 	id_table[0].name = id;
 	i = tx;
 	while (id_table[i].name != id&&i != 0)
 	{
-		i = i - 1;
-		if (id_table[i].lev != level)
+	
+		if (id_table[i].lev != level_temp)
 		{
 			if (id_table[i].name == id)
 				return i;
 			return 0;
 		}
+		i = i - 1;
 	}
 	return i;
 }

@@ -10,7 +10,7 @@ void expression(string &result, string &result_type);
 void multi_statement();
 string generate_temp_var();
 void generate(string opr, string src1, string src2, string des);
-int check_var_ifexist(string id);
+int check_var_ifexist(string id, int lev);
 int check_func_assign_ifOK(string id);
 string generate_label();
 string generate_func_proc_label(string name, int code);
@@ -19,6 +19,10 @@ string generate_string_Label(int string_num_);
 void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 	string result;
 	string type;
+	string push_result[10];
+	string off_site[10];
+	int addr_or_value[10];
+	int param_num = 0;
 	if (sym == "lparen")
 	{
 		int nums = 0;
@@ -28,31 +32,38 @@ void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 			{
 				if (sym == "ident")
 				{
-					int posi=position(iden);
-					if (posi == 0)
+					int positi=position(iden);
+					if (positi == 0)
 					{
 						error(0);
 						expression(result, type);
 					}
-					else if (id_table[posi].obj == "const")
+					else if (id_table[positi].obj == "const")
 					{
 						error(46);
 						getsym();
 					}
-					else if (id_table[posi].type == "integersym"&&id_table[posi].type == "charsym")
+					else if (id_table[positi].type == "integersym" || id_table[positi].type == "charsym")
 					{
-						generate("PUSHA",id_table[posi].name,"0","");
-						type = id_table[posi].type;
+				//		generate("PUSHA", id_table[positi].name, "0", "");
+						addr_or_value[param_num] = 1;
+						off_site[param_num] = "0";
+						push_result[param_num++] = id_table[positi].name;
+
+						type = id_table[positi].type;
 						getsym();
 					}
-					else if (id_table[posi].type == "array")
+					else if (id_table[positi].type == "array")
 					{
 						string array_name = iden;
 						string array_offside;
-						type = id_table[posi].arrayinfo->type;
+						type = id_table[positi].arrayinfo->type;
 						getsym();
 						array_ident(array_offside);
-						generate("PUSHA", array_name, array_offside, "");
+				//		generate("PUSHA", array_name, array_offside, "");
+						addr_or_value[param_num] = 1;
+						off_site[param_num] = array_offside;
+						push_result[param_num++] = array_name;
 						getsym();
 					}
 					else
@@ -69,13 +80,16 @@ void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 			else
 			{
 				expression(result, type);
-				generate("PUSH",result,"","");
+				addr_or_value[param_num] = 0;
+				off_site[param_num] = "";
+				push_result[param_num++] = result;
+	//			generate("PUSH",result,"","");
 			}
 			if (id_table[posi].param_list->types[nums] == "charsym"&&type != "charsym")
 				error(42);
 			nums++;
 		} while (sym == "comma");
-
+		
 		if (sym != "rparen")
 		{
 			error(3);
@@ -88,6 +102,14 @@ void function_params(int posi){//这个也是废弃的矿坑,好吧，这不是
 		}
 		
 		//int paramnum;//参数个数。
+	}
+	generate("CALL", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code), "", "");
+	for (int i = 0; i < param_num; i++)
+	{
+		if (addr_or_value[i])
+			generate("PUSHA", push_result[i], off_site[i], "");
+		else
+			generate("PUSH", push_result[i], "", "");
 	}
 	generate("JMP", "", "", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code));
 }
@@ -127,7 +149,7 @@ void factor(string &result, string &result_type){
 				if (id_table[posi].obj == "function")
 				{
 					getsym();
-					generate("CALL", generate_func_proc_label(id_table[posi].name, id_table[posi].param_list->function_code), "", "");
+					
 					function_params(posi);
 					string des = generate_temp_var();
 					generate("ASSIGN", "@", "", des);
@@ -324,8 +346,8 @@ int condition(int flag)
 }
 void statement()
 {
-	string correctsymbols[] = { "ident", "ifsym", "dosym","beginsym","readsym","writesym","forsym",""};
-	string continuesymbols[] = { "semicolon","endsym","" };
+	string correctsymbols[] = { "ident", "ifsym", "dosym", "beginsym", "readsym", "writesym", "forsym", "semicolon", "endsym","" };
+	string continuesymbols[] = { "" };
 	test(correctsymbols, continuesymbols, 39);
 //	printf("now in statement\n");
 	if (sym == "ident")
@@ -346,7 +368,7 @@ void statement()
 		{
 			des = id_table[pos].name;
 //			printf("now in call_statement\n");
-			generate("CALL", generate_func_proc_label(id_table[pos].name, id_table[pos].param_list->function_code), "", "");
+//			generate("CALL", generate_func_proc_label(id_table[pos].name, id_table[pos].param_list->function_code), "", "");
 			getsym();
 			function_params(pos);
 		
@@ -384,8 +406,8 @@ void statement()
 				getsym();
 			else
 				error(24);
-			string continuesymbols2[] = { "" };
-			test(facbegsys, continuesymbols2, 36);
+//			string continuesymbols2[] = { "" };
+//			test(facbegsys, continuesymbols2, 36);
 			if (id_table[pos].type == "array")
 			{
 				expression(des,type);
@@ -495,11 +517,14 @@ void statement()
 				{
 					getsym();
 					expression(des,type);
+					generate("WRITE", "", type, des);
 				}
 			}
 			else
-				expression(des,type);//这儿也是不需要滴！
-			generate("WRITE","",type,des);
+			{
+				expression(des, type);//这儿也是不需要滴！
+				generate("WRITE", "", type, des);
+			}
 			if (sym != "rparen")
 				error(3);
 			getsym();
@@ -551,9 +576,9 @@ void statement()
 			error(27);
 		int code_index_temp = code_index;
 		if (opr=="ADD")
-			generate("JGE", des, src2, "");
+			generate("JGR", des, src2, "");
 		else
-			generate("JLE", des, src2, "");
+			generate("JLS", des, src2, "");
 		if (sym == "dosym")
 		{
 			getsym();

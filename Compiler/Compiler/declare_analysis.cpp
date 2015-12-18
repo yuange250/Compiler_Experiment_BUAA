@@ -5,7 +5,7 @@ void test(string *s1, string *s2, int error_no);
 int ifin(string symbol, string *symbols);
 void getsym();
 void block(string func_name, int code);
-int check_var_ifexist(string id);
+int check_var_ifexist(string id, int lev);
 int check_func_assign_ifOK(string id);
 void generate(string opr, string src1, string src2, string des);
 string generate_func_proc_label(string name, int code);
@@ -44,6 +44,8 @@ void const_declaration()//这与下面所有declaration类似,都是递归下降的一部分，程序
 	bool minus_symbol = false;
 	do
 	{
+		if (sym == "comma")
+			getsym();
 		if (sym == "ident")
 		{
 			name = iden;
@@ -55,15 +57,16 @@ void const_declaration()//这与下面所有declaration类似,都是递归下降的一部分，程序
 				getsym();
 				if (sym == "plus" || sym == "minus")
 				{
-					getsym();
 					if (sym == "minus")
-						minus_symbol=true;
+						minus_symbol = true;
+					getsym();
+					
 				}
 				if (sym == "uinteger" || sym == "char")
 				{
 					if (minus_symbol)
 						number = -number;
-					if (check_var_ifexist(iden) != 0)
+					if (check_var_ifexist(iden,level) != 0)
 					{
 						error(1);
 					}
@@ -79,7 +82,7 @@ void const_declaration()//这与下面所有declaration类似,都是递归下降的一部分，程序
 		else
 			error(2);
 		
-	} while (sym == ",");
+	} while (sym == "comma");
 	if (sym != "semicolon")
 		error(33);//缺少分号
 	else
@@ -129,7 +132,7 @@ void variable_declaration()
 		int curren_index = tx;//先记住当前符号表的位置
 		if (sym == "ident")
 		{
-			if (check_var_ifexist(iden) != 0)
+			if (check_var_ifexist(iden,level) != 0)
 			{
 				error(1);
 			}
@@ -145,7 +148,7 @@ void variable_declaration()
 			getsym();
 			if (sym == "ident")
 			{
-				if (check_var_ifexist(iden) != 0)
+				if (check_var_ifexist(iden,level) != 0)
 				{
 					error(1);
 				}
@@ -242,7 +245,7 @@ void enter_func_parameters()//函数参数，填入进param_list指针所指的空间，
 			addr_or_value = false;//传值
 		if (sym == "ident")
 		{
-			if (check_var_ifexist(iden) != 0)
+			if (check_var_ifexist(iden,level+1) != 0)
 			{
 				error(1);
 			}
@@ -259,7 +262,7 @@ void enter_func_parameters()//函数参数，填入进param_list指针所指的空间，
 			getsym();
 			if (sym == "ident")
 			{
-				if (check_var_ifexist(iden) != 0)
+				if (check_var_ifexist(iden,level+1) != 0)
 				{
 					error(1);
 				}
@@ -295,7 +298,7 @@ void function_declaration()
 //	printf("now in funcdeclaration\n");
 	if (sym == "ident")
 	{
-		if (check_var_ifexist(iden) != 0)
+		if (check_var_ifexist(iden,level) != 0)
 		{
 			error(1);
 		}
@@ -359,7 +362,7 @@ void procedure_declaration()
 //	printf("now in proceduredeclaration\n");
 	if (sym == "ident")
 	{
-		if (check_var_ifexist(iden) != 0)
+		if (check_var_ifexist(iden,level) != 0)
 		{
 			error(1);
 		}

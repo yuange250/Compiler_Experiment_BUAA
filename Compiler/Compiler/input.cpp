@@ -18,11 +18,12 @@ void getch()
 		ll = 0;
 		cc = 0;
 		c_temp = 0;
-		while (c_temp != '\n')
+		while (c_temp != '\n'&&c_temp!=EOF&&c_temp!='.')
 		{
 			c_temp = fgetc(IN);
-			if (c_temp!='\n')
+			if (c_temp!='\n'&&c_temp!=EOF)
 				line[ll++] = c_temp;
+			
 		}
 		line[ll++] = ' ';//加了一个缓冲，用于回退
 	}
@@ -215,7 +216,8 @@ void getsym()
 		sym= ssym[ch];
 		if (sym == "")
 		{
-			error(9);//illegal charactor
+			error(5);//illegal charactor
+			getsym();
 		}
 		else
 //		  cout << sym + "," << ch << endl;

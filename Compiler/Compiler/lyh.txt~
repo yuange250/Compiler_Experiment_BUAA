@@ -1,0 +1,186 @@
+const a=0,b=-4,c='z';
+var d,e:char;f,g,h:integer;i:array[10] of integer;s:array[3] of char;
+procedure Abs(var x:integer;y:integer);
+begin
+	if x<0 then
+		x:=-x;
+	if y<0 then
+		y:=-y;
+	write("After Abs :");
+	write("\n");
+end;
+procedure Abs1(var x:integer);
+	
+	var result:integer;
+	
+	begin
+		
+		if x<0	then
+			result :=-x
+		else
+			result :=x;
+		x :=result;
+	end;
+	
+procedure Abs2(x:integer);
+	
+	var result:integer;
+	
+	begin
+		
+		if x<0	then
+			result :=-x
+		else
+			result :=x;
+		x :=result;
+	end;
+	
+function Sub(var x,y:integer):integer;
+	
+	var result:integer;
+	begin
+		result :=x-y;
+		Sub:=result;
+	end;
+	/*·Ö³ÌĞò½áÊø*/
+procedure Swap(var x,y:integer);
+	var swap:integer;
+		function test(x,u:char):char;
+			const d=2;
+			var cp:char;
+			begin
+				cp:=d;
+			end;
+	begin
+		write("Now is the Swap\n");
+		write("Swap get the parameter 0 is ",x);
+		write("\n");
+		write("Swap get the parameter 1 is ",y);
+		write("\n");
+		swap :=x;
+		x :=y;
+		y :=swap;
+	end;
+	
+procedure swap(x,y:integer);
+	var t:integer;
+	begin	
+		write("Now is the swap\n");
+		write("swap get the parameter 0 is ",x);
+		write("\n");
+		write("swap get the parameter 1 is ",y);
+		write("\n");
+		t:=x;
+		x:=y;
+		y:=t;
+	end;
+procedure Reverse(lever:integer);
+	begin
+		if lever<5 then
+			begin
+				write("The lever now is ",lever);
+				write("\n");
+				write("The value in array i[9-lever] is ");
+				write(i[9-lever]);
+				write("\n");
+				write("The value in array i[lever] is ");
+				write(i[lever]);
+				write("\n");
+				Swap(i[lever],i[9-lever]);
+				Reverse(lever+1);
+			end
+		else
+			write("The array is reversed\n");
+	end;
+begin
+	f :=a;
+	g :=f+5;
+	
+	do
+		begin 
+			i[f] :=f;
+			f :=f+1
+		end
+	while f<g;
+	for h :=f to g+1*g do
+		i[h] :=h;
+	h:=5678;
+	write("The array is assign\n");
+	write("The i[0] is ",i[0]);
+	write("\n");	
+	write("The i[1] is ",i[1]);
+	write("\n");	
+	write("The i[2] is ",i[2]);
+	write("\n");	
+	write("The i[3] is ",i[3]);
+	write("\n");	
+	write("The i[4] is ",i[4]);
+	write("\n");	
+	write("The i[5] is ",i[5]);
+	write("\n");	
+	write("The i[6] is ",i[6]);
+	write("\n");	
+	write("The i[7] is ",i[7]);
+	write("\n");	
+	write("The i[8] is ",i[8]);
+	write("\n");	
+	write("The i[9] is ",i[9]);
+	write("\n");	
+	write("Now the procedure named Reverse is called\n");
+	Reverse(0);
+	write("Please input two numbers now\n");
+	read(f,g);
+	write("Adding the two numbers which you input before together and you get the result ",Sub(g,f));
+	;
+	;
+	write("\n");
+	h:=Sub(f,g);
+	write("h is ",h);
+	write("\n");
+	write("Now the f is ",f);
+	Abs1(f);
+	write("\n");
+	write("Now the f is ",f);
+	write("\n");
+	write("Now the g is ",g);
+	write("\n");
+	Abs2(g);
+	write("Now the g is ",g);
+	write("\n");
+	Swap(f,g);
+	write("Now the g is ",g);
+	write("\n");
+	write("Now the f is ",f);
+	write("\n");
+	f:=-20;
+	g:=-23;
+	write("Now f is ",f);
+	write(",and g is ",g);
+	write("\n");
+	Abs(f,g);
+	write("Now f is ",f);
+	write(",and g is ",g);
+	write("\n");
+	write("Now begin to Swap array i\n");
+	h:=0;	
+	write("The i[0] is ",i[0]);
+	write("\n");	
+	write("The i[1] is ",i[1]);
+	write("\n");	
+	write("The i[2] is ",i[2]);
+	write("\n");	
+	write("The i[3] is ",i[3]);
+	write("\n");	
+	write("The i[4] is ",i[4]);
+	write("\n");	
+	write("The i[5] is ",i[5]);
+	write("\n");	
+	write("The i[6] is ",i[6]);
+	write("\n");	
+	write("The i[7] is ",i[7]);
+	write("\n");	
+	write("The i[8] is ",i[8]);
+	write("\n");	
+	write("The i[9] is ",i[9]);
+	write("\n");	
+end.

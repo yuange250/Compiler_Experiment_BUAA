@@ -14,7 +14,7 @@ string generate_func_proc_label(string name, int code);
 void clear(int level)
 {
 	int i = tx;
-	while (id_table[i].lev == level)
+	while (id_table[i].lev >= level)
 	{
 		/*
 		if (id_table[i].arrayinfo != NULL)
@@ -37,7 +37,7 @@ void block(string func_name,int code)
 	temp_var_num = 0;
 	level++;
 //	printf("now in block\n");
-	do{
+//	do{
 		if (sym == "constsym")
 		{
 			getsym();
@@ -64,7 +64,7 @@ void block(string func_name,int code)
 		string correctsymbols[] = { "beginsym", "" };
 		
 		test(correctsymbols, declbegsys, 30);
-	} while (ifin(sym,declbegsys));
+//	} while (ifin(sym,declbegsys));
 	if (sym == "beginsym")
 	{
 		generate("PLABEL", "", "", generate_func_proc_label(func_name, code));

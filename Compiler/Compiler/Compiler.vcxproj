@@ -92,7 +92,8 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="block_anlysis.cpp" />
-    <ClCompile Include="optimize.cpp" />
+    <ClCompile Include="dag_optimize.cpp" />
+    <ClCompile Include="sight_optimize.cpp" />
     <ClCompile Include="statement_analysis.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -62,7 +62,10 @@
     <ClCompile Include="generate_mips.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="optimize.cpp">
+    <ClCompile Include="sight_optimize.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dag_optimize.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
