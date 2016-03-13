@@ -346,7 +346,7 @@ int condition(int flag)
 }
 void statement()
 {
-	string correctsymbols[] = { "ident", "ifsym", "dosym", "beginsym", "readsym", "writesym", "forsym", "semicolon", "endsym","" };
+	string correctsymbols[] = { "ident","elsesym", "ifsym", "dosym", "beginsym", "readsym", "writesym", "forsym", "semicolon", "endsym","" };
 	string continuesymbols[] = { "" };
 	test(correctsymbols, continuesymbols, 39);
 //	printf("now in statement\n");
@@ -562,7 +562,7 @@ void statement()
 			error(24);
 		generate("ASSIGN", src1, "", des);
 		string label = generate_label();
-		generate("LABEL", "", "", label);
+		
 		if (sym == "downtosym" || sym == "tosym")
 		{
 			if (sym == "downtosym")
@@ -574,6 +574,7 @@ void statement()
 		}
 		else
 			error(27);
+		generate("LABEL", "", "", label);
 		int code_index_temp = code_index;
 		if (opr=="ADD")
 			generate("JGR", des, src2, "");

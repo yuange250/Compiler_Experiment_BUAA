@@ -68,5 +68,8 @@
     <ClCompile Include="dag_optimize.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="active_variable_analysis.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

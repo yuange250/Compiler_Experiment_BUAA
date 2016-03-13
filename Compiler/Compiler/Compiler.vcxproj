@@ -52,6 +52,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <ProgramDataBaseFileName>$(IntDir)\$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -86,6 +87,7 @@
     <ClInclude Include="functions.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="active_variable_analysis.cpp" />
     <ClCompile Include="declare_analysis.cpp" />
     <ClCompile Include="generate_midcode.cpp" />
     <ClCompile Include="generate_mips.cpp" />

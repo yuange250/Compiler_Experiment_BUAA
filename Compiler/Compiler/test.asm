@@ -1,959 +1,449 @@
 .data
-_Str_0: .asciiz "After Abs :"
-_Str_1: .asciiz "\n"
-_Str_2: .asciiz "Now is the Swap\n"
-_Str_3: .asciiz "Swap get the parameter 0 is "
-_Str_4: .asciiz "\n"
-_Str_5: .asciiz "Swap get the parameter 1 is "
-_Str_6: .asciiz "\n"
-_Str_7: .asciiz "Now is the swap\n"
-_Str_8: .asciiz "swap get the parameter 0 is "
-_Str_9: .asciiz "\n"
-_Str_10: .asciiz "swap get the parameter 1 is "
-_Str_11: .asciiz "\n"
-_Str_12: .asciiz "The lever now is "
-_Str_13: .asciiz "\n"
-_Str_14: .asciiz "The value in array i[9-lever] is "
-_Str_15: .asciiz "\n"
-_Str_16: .asciiz "The value in array i[lever] is "
-_Str_17: .asciiz "\n"
-_Str_18: .asciiz "The array is reversed\n"
-_Str_19: .asciiz "The array is assign\n"
-_Str_20: .asciiz "The i[0] is "
-_Str_21: .asciiz "\n"
-_Str_22: .asciiz "The i[1] is "
-_Str_23: .asciiz "\n"
-_Str_24: .asciiz "The i[2] is "
-_Str_25: .asciiz "\n"
-_Str_26: .asciiz "The i[3] is "
-_Str_27: .asciiz "\n"
-_Str_28: .asciiz "The i[4] is "
-_Str_29: .asciiz "\n"
-_Str_30: .asciiz "The i[5] is "
-_Str_31: .asciiz "\n"
-_Str_32: .asciiz "The i[6] is "
-_Str_33: .asciiz "\n"
-_Str_34: .asciiz "The i[7] is "
-_Str_35: .asciiz "\n"
-_Str_36: .asciiz "The i[8] is "
-_Str_37: .asciiz "\n"
-_Str_38: .asciiz "The i[9] is "
-_Str_39: .asciiz "\n"
-_Str_40: .asciiz "Now the procedure named Reverse is called\n"
-_Str_41: .asciiz "Please input two numbers now\n"
-_Str_42: .asciiz "Adding the two numbers which you input before together and you get the result "
-_Str_43: .asciiz "\n"
-_Str_44: .asciiz "h is "
-_Str_45: .asciiz "\n"
-_Str_46: .asciiz "Now the f is "
-_Str_47: .asciiz "\n"
-_Str_48: .asciiz "Now the f is "
-_Str_49: .asciiz "\n"
-_Str_50: .asciiz "Now the g is "
-_Str_51: .asciiz "\n"
-_Str_52: .asciiz "Now the g is "
-_Str_53: .asciiz "\n"
-_Str_54: .asciiz "Now the g is "
-_Str_55: .asciiz "\n"
-_Str_56: .asciiz "Now the f is "
-_Str_57: .asciiz "\n"
-_Str_58: .asciiz "Now f is "
-_Str_59: .asciiz ",and g is "
-_Str_60: .asciiz "\n"
-_Str_61: .asciiz "Now f is "
-_Str_62: .asciiz ",and g is "
-_Str_63: .asciiz "\n"
-_Str_64: .asciiz "Now begin to Swap array i\n"
-_Str_65: .asciiz "The i[0] is "
-_Str_66: .asciiz "\n"
-_Str_67: .asciiz "The i[1] is "
-_Str_68: .asciiz "\n"
-_Str_69: .asciiz "The i[2] is "
-_Str_70: .asciiz "\n"
-_Str_71: .asciiz "The i[3] is "
-_Str_72: .asciiz "\n"
-_Str_73: .asciiz "The i[4] is "
-_Str_74: .asciiz "\n"
-_Str_75: .asciiz "The i[5] is "
-_Str_76: .asciiz "\n"
-_Str_77: .asciiz "The i[6] is "
-_Str_78: .asciiz "\n"
-_Str_79: .asciiz "The i[7] is "
-_Str_80: .asciiz "\n"
-_Str_81: .asciiz "The i[8] is "
-_Str_82: .asciiz "\n"
-_Str_83: .asciiz "The i[9] is "
-_Str_84: .asciiz "\n"
+_Str_0: .asciiz " "
+_Str_1: .asciiz "  fib"
+_Str_2: .asciiz "="
+_Str_3: .asciiz "  gcd("
+_Str_4: .asciiz ","
+_Str_5: .asciiz ")="
 .text
 jal MAIN_0
-Abs_1:
+input_1:
 addi $fp,$sp,500
 sw $ra,-12($fp)
-lw $t0,-20($fp)
-lw $t0,0($t0)
-bge $t0,0,_Label0
-lw $t0,-20($fp)
-lw $t0,0($t0)
-sub $t2,$zero,$t0
-lw $t1,-20($fp)
-sw $t2,0($t1)
-jal _Label1
+lw $t1,-16($fp)
+lw $s0,-28($t1)
+lw $t1,-16($fp)
+lw $s1,-20($t1)
+li $s2,97
+lw $t1,-16($fp)
+lw $s3,-16($t1)
+add $s3,$s0,$s0
+li $t0,2
+mulo $t4,$t0,$s1
+add $s3,$t4,$t4
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+li $t1,0
+sll $t1,$t1,2
+sub $t2,$t0,$t1
+sw $s2,0($t2)
+li $t0,1
+add $s3,$zero,$t0
 _Label0:
+bgt $s3,6,_Label1
+li $v0,5
+syscall
+add $s1,$v0,$zero
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s3,2
+sub $t2,$t0,$t1
+sw $s1,0($t2)
+addi $s3,$s3,1
+jal _Label0
 _Label1:
-lw $t0,-24($fp)
-bge $t0,0,_Label2
-lw $t0,-24($fp)
-sub $t2,$zero,$t0
+lw $t1,-16($fp)
+sw $s1,-20($t1)
+lw $t1,-16($fp)
+sw $s3,-16($t1)
+lw $sp,-4($fp)
+lw $fp,-8($fp)
+lw $ra,-12($sp)
+jr $ra
+fib_2:
+addi $fp,$sp,500
+sw $ra,-12($fp)
+lw $s0,-20($fp)
+li $t0,1
+add $t2,$zero,$t0
 sw $t2,-24($fp)
+li $t0,1
+add $t2,$zero,$t0
+sw $t2,-28($fp)
+bgt $s0,2,_Label2
+li $t0,1
+add $t2,$zero,$t0
+sw $t2,0($fp)
 jal _Label3
 _Label2:
+subi $t4,$s0,1
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+lw $t0,-16($fp)
+sw $t0,-16($sp)
+sw $t4,-20($sp)
+subi $sp,$sp,500
+jal fib_2
+lw $s0,-20($fp)
+lw $t0,0($sp)
+add $t5,$zero,$t0
+subi $t6,$s0,2
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+lw $t0,-16($fp)
+sw $t0,-16($sp)
+sw $t6,-20($sp)
+sw $t5,-40($fp)
+subi $sp,$sp,500
+jal fib_2
+lw $t0,0($sp)
+add $t7,$zero,$t0
+lw $t0,-40($fp)
+add $t2,$t0,$t7
+sw $t2,0($fp)
 _Label3:
-la $a0,_Str_0
-li $v0,4
-syscall
-la $a0,_Str_1
-li $v0,4
-syscall
 lw $sp,-4($fp)
 lw $fp,-8($fp)
 lw $ra,-12($sp)
 jr $ra
-Abs1_2:
+qsort_3:
 addi $fp,$sp,500
 sw $ra,-12($fp)
-lw $t0,-20($fp)
-lw $t0,0($t0)
-bge $t0,0,_Label4
-lw $t0,-20($fp)
-lw $t0,0($t0)
-sub $t2,$zero,$t0
-sw $t2,-24($fp)
-jal _Label5
+lw $s0,-24($fp)
+lw $s1,-20($fp)
+lw $s2,-40($fp)
+lw $s3,-28($fp)
+lw $s4,-32($fp)
+lw $s5,-36($fp)
+add $s3,$zero,$s1
+add $s4,$zero,$s0
+add $t4,$s1,$s0
+div $t5,$t4,2
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$t5,2
+sub $t2,$t0,$t1
+lw $s2,0($t2)
 _Label4:
-lw $t0,-20($fp)
-lw $t0,0($t0)
-add $t2,$zero,$t0
-sw $t2,-24($fp)
+subi $s3,$s3,1
 _Label5:
-lw $t0,-24($fp)
-add $t2,$zero,$t0
-lw $t1,-20($fp)
-sw $t2,0($t1)
-lw $sp,-4($fp)
-lw $fp,-8($fp)
-lw $ra,-12($sp)
-jr $ra
-Abs2_3:
-addi $fp,$sp,500
-sw $ra,-12($fp)
-lw $t0,-20($fp)
-bge $t0,0,_Label6
-lw $t0,-20($fp)
-sub $t2,$zero,$t0
-sw $t2,-24($fp)
+addi $s3,$s3,1
+ble $s3,$s0,_Label6
+add $s5,$zero,$s2
 jal _Label7
 _Label6:
-lw $t0,-20($fp)
-add $t2,$zero,$t0
-sw $t2,-24($fp)
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s3,2
+sub $t2,$t0,$t1
+lw $s5,0($t2)
 _Label7:
-lw $t0,-24($fp)
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s3,2
+sub $t2,$t0,$t1
+lw $t6,0($t2)
+blt $t6,$s2,_Label5
+addi $s4,$s4,1
+_Label8:
+subi $s4,$s4,1
+blt $s4,$s1,_Label9
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s4,2
+sub $t2,$t0,$t1
+lw $s5,0($t2)
+jal _Label10
+_Label9:
+add $s5,$zero,$s2
+_Label10:
+blt $s2,$s5,_Label8
+bgt $s3,$s4,_Label11
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s3,2
+sub $t2,$t0,$t1
+lw $s5,0($t2)
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s4,2
+sub $t2,$t0,$t1
+lw $t7,0($t2)
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s3,2
+sub $t2,$t0,$t1
+sw $t7,0($t2)
+lw $t0,-16($fp)
+addi $t0,$t0,-32
+sll $t1,$s4,2
+sub $t2,$t0,$t1
+sw $s5,0($t2)
+addi $s3,$s3,1
+subi $s4,$s4,1
+jal _Label12
+_Label11:
+_Label12:
+ble $s3,$s4,_Label4
+bge $s3,$s0,_Label13
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+lw $t0,-16($fp)
+sw $t0,-16($sp)
+sw $s3,-20($sp)
+sw $s0,-24($sp)
+sw $s2,-40($fp)
+sw $s3,-28($fp)
+sw $s4,-32($fp)
+sw $s5,-36($fp)
+subi $sp,$sp,500
+jal qsort_3
+lw $s1,-20($fp)
+lw $s4,-32($fp)
+lw $s5,-36($fp)
+lw $t0,0($sp)
+add $t8,$zero,$t0
+add $s5,$zero,$t8
+jal _Label14
+_Label13:
+_Label14:
+ble $s4,$s1,_Label15
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+lw $t0,-16($fp)
+sw $t0,-16($sp)
+sw $s1,-20($sp)
+sw $s4,-24($sp)
+sw $s2,-40($fp)
+sw $s3,-28($fp)
+sw $s4,-32($fp)
+sw $s5,-36($fp)
+subi $sp,$sp,500
+jal qsort_3
+lw $s5,-36($fp)
+lw $t0,0($sp)
+add $t9,$zero,$t0
+add $s5,$zero,$t9
+jal _Label16
+_Label15:
+_Label16:
+li $t0,1
 add $t2,$zero,$t0
-sw $t2,-20($fp)
+sw $t2,0($fp)
+sw $s2,-40($fp)
+sw $s3,-28($fp)
+sw $s4,-32($fp)
+sw $s5,-36($fp)
 lw $sp,-4($fp)
 lw $fp,-8($fp)
 lw $ra,-12($sp)
 jr $ra
-Sub_4:
+swap_4:
 addi $fp,$sp,500
 sw $ra,-12($fp)
-lw $t0,-20($fp)
-lw $t0,0($t0)
+lw $t1,-20($fp)
+lw $s0,0($t1)
 lw $t1,-24($fp)
-lw $t1,0($t1)
-sub $t2,$t0,$t1
+lw $s1,0($t1)
+add $t2,$zero,$s0
+sw $t2,-28($fp)
+add $s0,$zero,$s1
+lw $t0,-28($fp)
+add $s1,$zero,$t0
+lw $t1,-20($fp)
+sw $s0,0($t1)
+lw $t1,-24($fp)
+sw $s1,0($t1)
+lw $sp,-4($fp)
+lw $fp,-8($fp)
+lw $ra,-12($sp)
+jr $ra
+mod_5:
+addi $fp,$sp,500
+sw $ra,-12($fp)
+lw $s0,-20($fp)
+lw $s1,-24($fp)
+div $t4,$s0,$s1
+mulo $t5,$t4,$s1
+sub $t2,$s0,$t5
 sw $t2,0($fp)
 lw $sp,-4($fp)
 lw $fp,-8($fp)
 lw $ra,-12($sp)
 jr $ra
-test_6:
+gcd_6:
 addi $fp,$sp,500
 sw $ra,-12($fp)
-li $t0,2
-add $t2,$zero,$t0
-sw $t2,-32($fp)
-lw $sp,-4($fp)
-lw $fp,-8($fp)
-lw $ra,-12($sp)
-jr $ra
-Swap_5:
-addi $fp,$sp,500
-sw $ra,-12($fp)
-la $a0,_Str_2
-li $v0,4
-syscall
-la $a0,_Str_3
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-20($fp)
-lw $a0,0($a0)
-syscall
-la $a0,_Str_4
-li $v0,4
-syscall
-la $a0,_Str_5
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-24($fp)
-lw $a0,0($a0)
-syscall
-la $a0,_Str_6
-li $v0,4
-syscall
-lw $t0,-20($fp)
-lw $t0,0($t0)
-add $t2,$zero,$t0
-sw $t2,-28($fp)
-lw $t0,-24($fp)
-lw $t0,0($t0)
-add $t2,$zero,$t0
-lw $t1,-20($fp)
-sw $t2,0($t1)
-lw $t0,-28($fp)
-add $t2,$zero,$t0
-lw $t1,-24($fp)
-sw $t2,0($t1)
-lw $sp,-4($fp)
-lw $fp,-8($fp)
-lw $ra,-12($sp)
-jr $ra
-swap_7:
-addi $fp,$sp,500
-sw $ra,-12($fp)
-la $a0,_Str_7
-li $v0,4
-syscall
-la $a0,_Str_8
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-20($fp)
-syscall
-la $a0,_Str_9
-li $v0,4
-syscall
-la $a0,_Str_10
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-24($fp)
-syscall
-la $a0,_Str_11
-li $v0,4
-syscall
-lw $t0,-20($fp)
-add $t2,$zero,$t0
-sw $t2,-28($fp)
-lw $t0,-24($fp)
-add $t2,$zero,$t0
-sw $t2,-20($fp)
-lw $t0,-28($fp)
-add $t2,$zero,$t0
-sw $t2,-24($fp)
-lw $sp,-4($fp)
-lw $fp,-8($fp)
-lw $ra,-12($sp)
-jr $ra
-Reverse_8:
-addi $fp,$sp,500
-sw $ra,-12($fp)
-lw $t0,-20($fp)
-bge $t0,5,_Label8
-la $a0,_Str_12
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-20($fp)
-syscall
-la $a0,_Str_13
-li $v0,4
-syscall
-la $a0,_Str_14
-li $v0,4
-syscall
-li $t0,9
-lw $t1,-20($fp)
-sub $t2,$t0,$t1
-sw $t2,-24($fp)
-lw $t0,-16($fp)
-addi $t0,$t0,-36
-lw $t1,-24($fp)
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-28
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-28($fp)
-syscall
-la $a0,_Str_15
-li $v0,4
-syscall
-la $a0,_Str_16
-li $v0,4
-syscall
-lw $t0,-16($fp)
-addi $t0,$t0,-36
-lw $t1,-20($fp)
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-32
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-32($fp)
-syscall
-la $a0,_Str_17
-li $v0,4
-syscall
-li $t0,9
-lw $t1,-20($fp)
-sub $t2,$t0,$t1
-sw $t2,-36($fp)
+lw $s0,-20($fp)
+lw $s1,-24($fp)
+bge $s0,$s1,_Label17
 sw $sp,-4($sp)
 sw $fp,-8($sp)
 lw $t0,-16($fp)
 sw $t0,-16($sp)
-lw $t0,-16($fp)
-addi $t0,$t0,-36
-lw $t1,-20($fp)
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-20($sp)
-lw $t0,-16($fp)
-addi $t0,$t0,-36
-lw $t1,-36($fp)
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-24($sp)
-subi $sp,$sp,500
-jal Swap_5
-lw $t0,-20($fp)
-addi $t2,$t0,1
-sw $t2,-40($fp)
-sw $sp,-4($sp)
-sw $fp,-8($sp)
-lw $t0,-16($fp)
-sw $t0,-16($sp)
-lw $t0,-40($fp)
+addi $t0,$fp,-20
 sw $t0,-20($sp)
+addi $t0,$fp,-24
+sw $t0,-24($sp)
 subi $sp,$sp,500
-jal Reverse_8
-jal _Label9
-_Label8:
-la $a0,_Str_18
-li $v0,4
-syscall
-_Label9:
+jal swap_4
+lw $s0,-20($fp)
+lw $s1,-24($fp)
+jal _Label18
+_Label17:
+_Label18:
+bne $s1,0,_Label19
+add $t2,$zero,$s0
+sw $t2,0($fp)
+jal _Label20
+_Label19:
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+lw $t0,-16($fp)
+sw $t0,-16($sp)
+sw $s0,-20($sp)
+sw $s1,-24($sp)
+subi $sp,$sp,500
+jal mod_5
+lw $s1,-24($fp)
+lw $t0,0($sp)
+add $t4,$zero,$t0
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+lw $t0,-16($fp)
+sw $t0,-16($sp)
+sw $s1,-20($sp)
+lw $t0,0($sp)
+sw $t0,-24($sp)
+subi $sp,$sp,500
+jal gcd_6
+lw $t0,0($sp)
+add $t5,$zero,$t0
+add $t2,$zero,$t5
+sw $t2,0($fp)
+_Label20:
 lw $sp,-4($fp)
 lw $fp,-8($fp)
 lw $ra,-12($sp)
 jr $ra
 MAIN_0:
-subi $sp,$sp,500
-addi $fp,$sp,500
+subi $sp,$sp,4048
+addi $fp,$sp,4048
 sw $ra,-12($fp)
-li $t0,0
-add $t2,$zero,$t0
-sw $t2,-24($fp)
-lw $t0,-24($fp)
-addi $t2,$t0,5
-sw $t2,-28($fp)
-_Label10:
-addi $t0,$fp,-36
-lw $t1,-24($fp)
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-24
-lw $t0,0($t1)
-sw $t0,0($t2)
-lw $t0,-24($fp)
-addi $t2,$t0,1
-sw $t2,-24($fp)
-lw $t0,-24($fp)
-lw $t1,-28($fp)
-blt $t0,$t1,_Label10
-lw $t0,-24($fp)
-add $t2,$zero,$t0
-sw $t2,-32($fp)
-_Label11:
-li $t0,1
-lw $t1,-28($fp)
-mulo $t2,$t0,$t1
-sw $t2,-88($fp)
-lw $t0,-28($fp)
-lw $t1,-88($fp)
-add $t2,$t0,$t1
-sw $t2,-92($fp)
-lw $t0,-32($fp)
-lw $t1,-92($fp)
-bgt $t0,$t1,_Label12
-addi $t0,$fp,-36
-lw $t1,-32($fp)
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-32
-lw $t0,0($t1)
-sw $t0,0($t2)
-lw $t0,-32($fp)
-addi $t2,$t0,1
-sw $t2,-32($fp)
-jal _Label11
-_Label12:
-li $t0,5678
-add $t2,$zero,$t0
-sw $t2,-32($fp)
-la $a0,_Str_19
-li $v0,4
-syscall
-la $a0,_Str_20
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-96
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-96($fp)
-syscall
-la $a0,_Str_21
-li $v0,4
-syscall
-la $a0,_Str_22
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,1
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-100
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-100($fp)
-syscall
-la $a0,_Str_23
-li $v0,4
-syscall
-la $a0,_Str_24
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,2
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-104
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-104($fp)
-syscall
-la $a0,_Str_25
-li $v0,4
-syscall
-la $a0,_Str_26
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,3
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-108
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-108($fp)
-syscall
-la $a0,_Str_27
-li $v0,4
-syscall
-la $a0,_Str_28
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,4
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-112
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-112($fp)
-syscall
-la $a0,_Str_29
-li $v0,4
-syscall
-la $a0,_Str_30
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,5
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-116
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-116($fp)
-syscall
-la $a0,_Str_31
-li $v0,4
-syscall
-la $a0,_Str_32
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,6
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-120
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-120($fp)
-syscall
-la $a0,_Str_33
-li $v0,4
-syscall
-la $a0,_Str_34
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,7
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-124
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-124($fp)
-syscall
-la $a0,_Str_35
-li $v0,4
-syscall
-la $a0,_Str_36
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,8
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-128
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-128($fp)
-syscall
-la $a0,_Str_37
-li $v0,4
-syscall
-la $a0,_Str_38
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,9
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-132
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-132($fp)
-syscall
-la $a0,_Str_39
-li $v0,4
-syscall
-la $a0,_Str_40
-li $v0,4
-syscall
+lw $s0,-28($fp)
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+sw $fp,-16($sp)
+subi $sp,$sp,500
+jal input_1
+lw $s0,-28($fp)
 sw $sp,-4($sp)
 sw $fp,-8($sp)
 sw $fp,-16($sp)
 li $t0,0
 sw $t0,-20($sp)
-subi $sp,$sp,500
-jal Reverse_8
-la $a0,_Str_41
-li $v0,4
-syscall
-li $v0,5
-syscall
-addi $t0,$fp,-24
-sw $v0,0($t0)
-li $v0,5
-syscall
-addi $t0,$fp,-28
-sw $v0,0($t0)
-la $a0,_Str_42
-li $v0,4
-syscall
-sw $sp,-4($sp)
-sw $fp,-8($sp)
-sw $fp,-16($sp)
-addi $t0,$fp,-28
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-20($sp)
-addi $t0,$fp,-24
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-24($sp)
-subi $sp,$sp,500
-jal Sub_4
-lw $t0,0($sp)
-add $t2,$zero,$t0
-sw $t2,-136($fp)
-li $v0,1
-lw $a0,-136($fp)
-syscall
-la $a0,_Str_43
-li $v0,4
-syscall
-sw $sp,-4($sp)
-sw $fp,-8($sp)
-sw $fp,-16($sp)
-addi $t0,$fp,-24
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-20($sp)
-addi $t0,$fp,-28
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-24($sp)
-subi $sp,$sp,500
-jal Sub_4
-lw $t0,0($sp)
-add $t2,$zero,$t0
-sw $t2,-140($fp)
-lw $t0,-140($fp)
-add $t2,$zero,$t0
-sw $t2,-32($fp)
-la $a0,_Str_44
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-32($fp)
-syscall
-la $a0,_Str_45
-li $v0,4
-syscall
-la $a0,_Str_46
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-24($fp)
-syscall
-sw $sp,-4($sp)
-sw $fp,-8($sp)
-sw $fp,-16($sp)
-addi $t0,$fp,-24
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-20($sp)
-subi $sp,$sp,500
-jal Abs1_2
-la $a0,_Str_47
-li $v0,4
-syscall
-la $a0,_Str_48
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-24($fp)
-syscall
-la $a0,_Str_49
-li $v0,4
-syscall
-la $a0,_Str_50
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-28($fp)
-syscall
-la $a0,_Str_51
-li $v0,4
-syscall
-sw $sp,-4($sp)
-sw $fp,-8($sp)
-sw $fp,-16($sp)
-lw $t0,-28($fp)
-sw $t0,-20($sp)
-subi $sp,$sp,500
-jal Abs2_3
-la $a0,_Str_52
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-28($fp)
-syscall
-la $a0,_Str_53
-li $v0,4
-syscall
-sw $sp,-4($sp)
-sw $fp,-8($sp)
-sw $fp,-16($sp)
-addi $t0,$fp,-24
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-20($sp)
-addi $t0,$fp,-28
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-24($sp)
-subi $sp,$sp,500
-jal Swap_5
-la $a0,_Str_54
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-28($fp)
-syscall
-la $a0,_Str_55
-li $v0,4
-syscall
-la $a0,_Str_56
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-24($fp)
-syscall
-la $a0,_Str_57
-li $v0,4
-syscall
-li $t0,20
-sub $t2,$zero,$t0
-sw $t2,-24($fp)
-li $t0,23
-sub $t2,$zero,$t0
-sw $t2,-28($fp)
-la $a0,_Str_58
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-24($fp)
-syscall
-la $a0,_Str_59
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-28($fp)
-syscall
-la $a0,_Str_60
-li $v0,4
-syscall
-sw $sp,-4($sp)
-sw $fp,-8($sp)
-sw $fp,-16($sp)
-addi $t0,$fp,-24
-li $t1,0
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-sw $t2,-20($sp)
-lw $t0,-28($fp)
+li $t0,6
 sw $t0,-24($sp)
 subi $sp,$sp,500
-jal Abs_1
-la $a0,_Str_61
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-24($fp)
-syscall
-la $a0,_Str_62
-li $v0,4
-syscall
-li $v0,1
-lw $a0,-28($fp)
-syscall
-la $a0,_Str_63
-li $v0,4
-syscall
-la $a0,_Str_64
-li $v0,4
-syscall
+jal qsort_3
+lw $s0,-28($fp)
+lw $t0,0($sp)
+subi $sp,$sp,4
+add $t4,$zero,$t0
+mul $t2,$t4,5
+sw $t2,-24($fp)
 li $t0,0
-add $t2,$zero,$t0
-sw $t2,-32($fp)
-la $a0,_Str_65
+add $s0,$zero,$t0
+_Label21:
+bgt $s0,6,_Label22
+la $a0,_Str_0
 li $v0,4
 syscall
-addi $t0,$fp,-36
+addi $t0,$fp,-32
+sll $t1,$s0,2
+sub $t2,$t0,$t1
+subi $sp,$sp,4
+lw $t5,0($t2)
+li $v0,1
+add $a0,$t5,$zero
+syscall
+addi $s0,$s0,1
+jal _Label21
+_Label22:
+la $a0,_Str_1
+li $v0,4
+syscall
+addi $t0,$fp,-32
 li $t1,0
 sll $t1,$t1,2
 sub $t2,$t0,$t1
-addi $t1,$fp,-144
-lw $t0,0($t2)
-sw $t0,0($t1)
+subi $sp,$sp,4
+lw $t6,0($t2)
 li $v0,1
-lw $a0,-144($fp)
+add $a0,$t6,$zero
 syscall
-la $a0,_Str_66
+la $a0,_Str_2
 li $v0,4
 syscall
-la $a0,_Str_67
+addi $t0,$fp,-32
+li $t1,0
+sll $t1,$t1,2
+sub $t2,$t0,$t1
+subi $sp,$sp,4
+lw $t7,0($t2)
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+sw $fp,-16($sp)
+sw $t7,-20($sp)
+sw $s0,-28($fp)
+subi $sp,$sp,500
+jal fib_2
+lw $t0,0($sp)
+subi $sp,$sp,4
+add $t8,$zero,$t0
+li $v0,1
+add $a0,$t8,$zero
+syscall
+la $a0,_Str_3
 li $v0,4
 syscall
-addi $t0,$fp,-36
+addi $t0,$fp,-32
 li $t1,1
 sll $t1,$t1,2
 sub $t2,$t0,$t1
-addi $t1,$fp,-148
-lw $t0,0($t2)
-sw $t0,0($t1)
+subi $sp,$sp,4
+lw $t9,0($t2)
 li $v0,1
-lw $a0,-148($fp)
+add $a0,$t9,$zero
 syscall
-la $a0,_Str_68
+la $a0,_Str_4
 li $v0,4
 syscall
-la $a0,_Str_69
-li $v0,4
-syscall
-addi $t0,$fp,-36
+addi $t0,$fp,-32
 li $t1,2
 sll $t1,$t1,2
 sub $t2,$t0,$t1
-addi $t1,$fp,-152
-lw $t0,0($t2)
-sw $t0,0($t1)
+subi $sp,$sp,4
+lw $t3,0($t2)
 li $v0,1
-lw $a0,-152($fp)
+add $a0,$t3,$zero
 syscall
-la $a0,_Str_70
+la $a0,_Str_5
 li $v0,4
 syscall
-la $a0,_Str_71
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,3
+addi $t0,$fp,-32
+li $t1,1
 sll $t1,$t1,2
 sub $t2,$t0,$t1
-addi $t1,$fp,-156
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-156($fp)
-syscall
-la $a0,_Str_72
-li $v0,4
-syscall
-la $a0,_Str_73
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,4
+subi $sp,$sp,4
+lw $t4,0($t2)
+addi $t0,$fp,-32
+li $t1,2
 sll $t1,$t1,2
 sub $t2,$t0,$t1
-addi $t1,$fp,-160
-lw $t0,0($t2)
-sw $t0,0($t1)
+subi $sp,$sp,4
+lw $t5,0($t2)
+sw $sp,-4($sp)
+sw $fp,-8($sp)
+sw $fp,-16($sp)
+sw $t4,-20($sp)
+sw $t5,-24($sp)
+sw $s0,-28($fp)
+subi $sp,$sp,500
+jal gcd_6
+lw $t0,0($sp)
+subi $sp,$sp,4
+add $t6,$zero,$t0
 li $v0,1
-lw $a0,-160($fp)
-syscall
-la $a0,_Str_74
-li $v0,4
-syscall
-la $a0,_Str_75
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,5
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-164
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-164($fp)
-syscall
-la $a0,_Str_76
-li $v0,4
-syscall
-la $a0,_Str_77
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,6
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-168
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-168($fp)
-syscall
-la $a0,_Str_78
-li $v0,4
-syscall
-la $a0,_Str_79
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,7
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-172
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-172($fp)
-syscall
-la $a0,_Str_80
-li $v0,4
-syscall
-la $a0,_Str_81
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,8
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-176
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-176($fp)
-syscall
-la $a0,_Str_82
-li $v0,4
-syscall
-la $a0,_Str_83
-li $v0,4
-syscall
-addi $t0,$fp,-36
-li $t1,9
-sll $t1,$t1,2
-sub $t2,$t0,$t1
-addi $t1,$fp,-180
-lw $t0,0($t2)
-sw $t0,0($t1)
-li $v0,1
-lw $a0,-180($fp)
-syscall
-la $a0,_Str_84
-li $v0,4
+add $a0,$t6,$zero
 syscall

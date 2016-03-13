@@ -1,0 +1,760 @@
+FUNCTION:0
+-------------------------------------------
+STANDARD BLOCK: 0
+***********************************
+new codes:
+PLABEL   input_1
+ADD i i n
+MUL 2 ntemp %2
+ADD %2 %2 n
+STORE a 0 space
+ASSIGN 1  n
+def:n 
+use:i ntemp space 
+in:i ntemp space 
+out:n 
+forward:
+backward:1 
+***********************************
+STANDARD BLOCK: 1
+***********************************
+new codes:
+LABEL   _Label0
+JGR n 6 _Label1
+def:
+use:n 
+in:n 
+out:n 
+forward:0 2 
+backward:3 2 
+***********************************
+STANDARD BLOCK: 2
+***********************************
+new codes:
+READ  integersym ntemp
+STORE a n ntemp
+ADD n 1 n
+JMP   _Label0
+def:ntemp 
+use:n 
+in:n 
+out:n 
+forward:1 
+backward:1 3 
+***********************************
+STANDARD BLOCK: 3
+***********************************
+new codes:
+LABEL   _Label1
+RETURN   
+def:
+use:
+in:
+out:
+forward:1 2 
+backward:
+***********************************
+global registers
+i:  0
+n:  3
+ntemp:  1
+space:  2
+-------------------------------------------
+FUNCTION:1
+-------------------------------------------
+STANDARD BLOCK: 0
+***********************************
+new codes:
+PLABEL   fib_2
+ASSIGN 1  e
+ASSIGN 1  f
+JGR m 2 _Label2
+def:e f 
+use:m 
+in:m 
+out:m 
+forward:
+backward:2 1 
+***********************************
+STANDARD BLOCK: 1
+***********************************
+new codes:
+ASSIGN 1  fib
+JMP   _Label3
+def:fib 
+use:
+in:m 
+out:m 
+forward:0 
+backward:5 2 
+***********************************
+STANDARD BLOCK: 2
+***********************************
+new codes:
+LABEL   _Label2
+SUB m 1 %0
+CALL fib_2  
+PUSH %0  
+JMP   fib_2
+def:
+use:m 
+in:m 
+out:m 
+forward:0 1 
+backward:3 
+***********************************
+STANDARD BLOCK: 3
+***********************************
+new codes:
+ASSIGN @  %1
+SUB m 2 %3
+CALL fib_2  
+PUSH %3  
+JMP   fib_2
+def:
+use:m 
+in:m 
+out:
+forward:2 
+backward:4 
+***********************************
+STANDARD BLOCK: 4
+***********************************
+new codes:
+ASSIGN @  %4
+ADD %1 %4 fib
+def:fib 
+use:
+in:
+out:
+forward:3 
+backward:5 
+***********************************
+STANDARD BLOCK: 5
+***********************************
+new codes:
+LABEL   _Label3
+RETURN   
+def:
+use:
+in:
+out:
+forward:1 4 
+backward:
+***********************************
+global registers
+m:  0
+-------------------------------------------
+FUNCTION:2
+-------------------------------------------
+STANDARD BLOCK: 0
+***********************************
+new codes:
+PLABEL   qsort_3
+ASSIGN l  i
+ASSIGN h  j
+ADD l h %0
+DIV %0 2 %1
+LOAD a %1 m
+def:i j m 
+use:l h 
+in:h l 
+out:j l h i m 
+forward:
+backward:1 
+***********************************
+STANDARD BLOCK: 1
+***********************************
+new codes:
+LABEL   _Label4
+SUB i 1 i
+def:
+use:i 
+in:m i h l j 
+out:j l h i m 
+forward:0 14 
+backward:2 
+***********************************
+STANDARD BLOCK: 2
+***********************************
+new codes:
+LABEL   _Label5
+ADD i 1 i
+JLE i h _Label6
+def:
+use:i h 
+in:m i h l j 
+out:j l h i m 
+forward:1 5 
+backward:4 3 
+***********************************
+STANDARD BLOCK: 3
+***********************************
+new codes:
+ASSIGN m  t
+JMP   _Label7
+def:t 
+use:m 
+in:m i h l j 
+out:j l h i m 
+forward:2 
+backward:5 4 
+***********************************
+STANDARD BLOCK: 4
+***********************************
+new codes:
+LABEL   _Label6
+LOAD a i t
+def:t 
+use:i 
+in:m i h l j 
+out:j l h i m 
+forward:2 3 
+backward:5 
+***********************************
+STANDARD BLOCK: 5
+***********************************
+new codes:
+LABEL   _Label7
+LOAD a i %6
+JLS %6 m _Label5
+def:
+use:i m 
+in:m i h l j 
+out:j l h i m 
+forward:3 4 
+backward:2 6 
+***********************************
+STANDARD BLOCK: 6
+***********************************
+new codes:
+ADD j 1 j
+def:
+use:j 
+in:m i h l j 
+out:j l h i m 
+forward:5 
+backward:7 
+***********************************
+STANDARD BLOCK: 7
+***********************************
+new codes:
+LABEL   _Label8
+SUB j 1 j
+JLS j l _Label9
+def:
+use:j l 
+in:m i h l j 
+out:j l h i m 
+forward:6 10 
+backward:9 8 
+***********************************
+STANDARD BLOCK: 8
+***********************************
+new codes:
+LOAD a j t
+JMP   _Label10
+def:t 
+use:j 
+in:m i h l j 
+out:j l h i m t 
+forward:7 
+backward:10 9 
+***********************************
+STANDARD BLOCK: 9
+***********************************
+new codes:
+LABEL   _Label9
+ASSIGN m  t
+def:t 
+use:m 
+in:m i h l j 
+out:j l h i t m 
+forward:7 8 
+backward:10 
+***********************************
+STANDARD BLOCK: 10
+***********************************
+new codes:
+LABEL   _Label10
+JLS m t _Label8
+def:
+use:m t 
+in:m t i h l j 
+out:m j l h i 
+forward:8 9 
+backward:7 11 
+***********************************
+STANDARD BLOCK: 11
+***********************************
+new codes:
+JGR i j _Label11
+def:
+use:i j 
+in:i h l j m 
+out:m j l h i 
+forward:10 
+backward:13 12 
+***********************************
+STANDARD BLOCK: 12
+***********************************
+new codes:
+LOAD a i t
+LOAD a j %11
+STORE a i %11
+STORE a j t
+ADD i 1 i
+SUB j 1 j
+JMP   _Label12
+def:t 
+use:i j 
+in:i h l j m 
+out:m j l h i 
+forward:11 
+backward:14 13 
+***********************************
+STANDARD BLOCK: 13
+***********************************
+new codes:
+LABEL   _Label11
+def:
+use:
+in:i h l j m 
+out:m j l h i 
+forward:11 12 
+backward:14 
+***********************************
+STANDARD BLOCK: 14
+***********************************
+new codes:
+LABEL   _Label12
+JLE i j _Label4
+def:
+use:i j 
+in:i h l j m 
+out:j l h i m 
+forward:12 13 
+backward:1 15 
+***********************************
+STANDARD BLOCK: 15
+***********************************
+new codes:
+JGE i h _Label13
+def:
+use:i h 
+in:i h l j 
+out:j l h i 
+forward:14 
+backward:18 16 
+***********************************
+STANDARD BLOCK: 16
+***********************************
+new codes:
+CALL qsort_3  
+PUSH i  
+PUSH h  
+JMP   qsort_3
+def:
+use:i h 
+in:i h l j 
+out:j l 
+forward:15 
+backward:17 
+***********************************
+STANDARD BLOCK: 17
+***********************************
+new codes:
+ASSIGN @  %14
+ASSIGN %14  t
+JMP   _Label14
+def:t 
+use:
+in:l j 
+out:j l 
+forward:16 
+backward:19 18 
+***********************************
+STANDARD BLOCK: 18
+***********************************
+new codes:
+LABEL   _Label13
+def:
+use:
+in:l j 
+out:j l 
+forward:15 17 
+backward:19 
+***********************************
+STANDARD BLOCK: 19
+***********************************
+new codes:
+LABEL   _Label14
+JLE j l _Label15
+def:
+use:j l 
+in:l j 
+out:j l 
+forward:17 18 
+backward:22 20 
+***********************************
+STANDARD BLOCK: 20
+***********************************
+new codes:
+CALL qsort_3  
+PUSH l  
+PUSH j  
+JMP   qsort_3
+def:
+use:l j 
+in:l j 
+out:
+forward:19 
+backward:21 
+***********************************
+STANDARD BLOCK: 21
+***********************************
+new codes:
+ASSIGN @  %15
+ASSIGN %15  t
+JMP   _Label16
+def:t 
+use:
+in:
+out:
+forward:20 
+backward:23 22 
+***********************************
+STANDARD BLOCK: 22
+***********************************
+new codes:
+LABEL   _Label15
+def:
+use:
+in:
+out:
+forward:19 21 
+backward:23 
+***********************************
+STANDARD BLOCK: 23
+***********************************
+new codes:
+LABEL   _Label16
+ASSIGN 1  qsort
+RETURN   
+def:qsort 
+use:
+in:
+out:
+forward:21 22 
+backward:
+***********************************
+global registers
+h:  0
+i:  3
+j:  4
+l:  1
+m:  2
+t:  5
+-------------------------------------------
+FUNCTION:3
+-------------------------------------------
+STANDARD BLOCK: 0
+***********************************
+new codes:
+PLABEL   swap_4
+ASSIGN aa  t
+ASSIGN b  aa
+ASSIGN t  b
+RETURN   
+def:t 
+use:aa b 
+in:aa b 
+out:
+forward:
+backward:
+***********************************
+global registers
+aa:  0
+b:  1
+-------------------------------------------
+FUNCTION:4
+-------------------------------------------
+STANDARD BLOCK: 0
+***********************************
+new codes:
+PLABEL   mod_5
+DIV aa b %1
+MUL %1 b %2
+SUB aa %2 mod
+RETURN   
+def:mod 
+use:aa b 
+in:aa b 
+out:
+forward:
+backward:
+***********************************
+global registers
+aa:  0
+b:  1
+-------------------------------------------
+FUNCTION:5
+-------------------------------------------
+STANDARD BLOCK: 0
+***********************************
+new codes:
+PLABEL   gcd_6
+JGE aa b _Label17
+def:
+use:aa b 
+in:aa b 
+out:b aa 
+forward:
+backward:3 1 
+***********************************
+STANDARD BLOCK: 1
+***********************************
+new codes:
+CALL swap_4  
+PUSHA aa 0 
+PUSHA b 0 
+JMP   swap_4
+def:
+use:aa b 
+in:aa b 
+out:b aa 
+forward:0 
+backward:2 
+***********************************
+STANDARD BLOCK: 2
+***********************************
+new codes:
+JMP   _Label18
+def:
+use:
+in:aa b 
+out:b aa 
+forward:1 
+backward:4 3 
+***********************************
+STANDARD BLOCK: 3
+***********************************
+new codes:
+LABEL   _Label17
+def:
+use:
+in:aa b 
+out:b aa 
+forward:0 2 
+backward:4 
+***********************************
+STANDARD BLOCK: 4
+***********************************
+new codes:
+LABEL   _Label18
+JNE b 0 _Label19
+def:
+use:b 
+in:aa b 
+out:b aa 
+forward:2 3 
+backward:6 5 
+***********************************
+STANDARD BLOCK: 5
+***********************************
+new codes:
+ASSIGN aa  gcd
+JMP   _Label20
+def:gcd 
+use:aa 
+in:aa b 
+out:b aa 
+forward:4 
+backward:9 6 
+***********************************
+STANDARD BLOCK: 6
+***********************************
+new codes:
+LABEL   _Label19
+CALL mod_5  
+PUSH aa  
+PUSH b  
+JMP   mod_5
+def:
+use:aa b 
+in:aa b 
+out:b 
+forward:4 5 
+backward:7 
+***********************************
+STANDARD BLOCK: 7
+***********************************
+new codes:
+ASSIGN @  %0
+CALL gcd_6  
+PUSH b  
+PUSH @  
+JMP   gcd_6
+def:
+use:b 
+in:b 
+out:
+forward:6 
+backward:8 
+***********************************
+STANDARD BLOCK: 8
+***********************************
+new codes:
+ASSIGN @  %1
+ASSIGN %1  gcd
+def:gcd 
+use:
+in:
+out:
+forward:7 
+backward:9 
+***********************************
+STANDARD BLOCK: 9
+***********************************
+new codes:
+LABEL   _Label20
+RETURN   
+def:
+use:
+in:
+out:
+forward:5 8 
+backward:
+***********************************
+global registers
+aa:  0
+b:  1
+-------------------------------------------
+FUNCTION:6
+-------------------------------------------
+STANDARD BLOCK: 0
+***********************************
+new codes:
+PLABEL   MAIN_0
+CALL input_1  
+JMP   input_1
+def:
+use:
+in:
+out:
+forward:
+backward:1 
+***********************************
+STANDARD BLOCK: 1
+***********************************
+new codes:
+CALL qsort_3  
+PUSH 0  
+PUSH 6  
+JMP   qsort_3
+def:
+use:
+in:
+out:
+forward:0 
+backward:2 
+***********************************
+STANDARD BLOCK: 2
+***********************************
+new codes:
+ASSIGN @  %2
+MUL %2 5 meanless
+ASSIGN 0  i
+def:meanless i 
+use:
+in:
+out:i 
+forward:1 
+backward:3 
+***********************************
+STANDARD BLOCK: 3
+***********************************
+new codes:
+LABEL   _Label21
+JGR i 6 _Label22
+def:
+use:i 
+in:i 
+out:i 
+forward:2 4 
+backward:5 4 
+***********************************
+STANDARD BLOCK: 4
+***********************************
+new codes:
+WRITE  string _Str_0
+LOAD a i %4
+WRITE  integersym %4
+ADD i 1 i
+JMP   _Label21
+def:
+use:i 
+in:i 
+out:i 
+forward:3 
+backward:3 5 
+***********************************
+STANDARD BLOCK: 5
+***********************************
+new codes:
+LABEL   _Label22
+WRITE  string _Str_1
+LOAD a 0 %5
+WRITE  integersym %5
+WRITE  string _Str_2
+LOAD a 0 %6
+CALL fib_2  
+PUSH %6  
+JMP   fib_2
+def:
+use:
+in:
+out:
+forward:3 4 
+backward:6 
+***********************************
+STANDARD BLOCK: 6
+***********************************
+new codes:
+ASSIGN @  %7
+WRITE  integersym %7
+WRITE  string _Str_3
+LOAD a 1 %8
+WRITE  integersym %8
+WRITE  string _Str_4
+LOAD a 2 %9
+WRITE  integersym %9
+WRITE  string _Str_5
+LOAD a 1 %10
+LOAD a 2 %11
+CALL gcd_6  
+PUSH %10  
+PUSH %11  
+JMP   gcd_6
+def:
+use:
+in:
+out:
+forward:5 
+backward:7 
+***********************************
+STANDARD BLOCK: 7
+***********************************
+new codes:
+ASSIGN @  %12
+WRITE  integersym %12
+def:
+use:
+in:
+out:
+forward:6 
+backward:
+***********************************
+global registers
+i:  0
+-------------------------------------------

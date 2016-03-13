@@ -52,6 +52,8 @@ function f3:integer;
       else
     else
       ;
+    write("W:  ",w);
+    write("    ");
     f3 := w;
   end;
 procedure p1(var c :integer);
@@ -145,6 +147,6 @@ begin
 
   write("begin test register allocation (should print hello,world).");
   p4;
-  //write("begin test read.");
-  //p5;
+  write("begin test read.");
+  p5;
 end.

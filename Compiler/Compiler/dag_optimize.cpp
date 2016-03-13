@@ -1,36 +1,5 @@
 #include "stdafx.h"
 #include "globals.h"
-struct standard_block{
-	int fb_num;
-	int forward_blocks_num[10];
-	int bb_num;
-	int backward_blocks_num[10];
-	int codes_num;
-	code codes[50];
-	code codes_after_optmize[50];
-	int new_codes_num;
-	code new_codes[50];
-	
-};
-struct function_block
-{
-	standard_block sbs[100];
-	int sb_nums;
-};
-struct DAG_node{
-	string text;
-	string vars[20];
-	int vars_num;
-	int fathers_num;
-	int left_child_num;
-	int right_child_num;
-	bool enable;
-};
-struct Stack_node
-{
-	string var_name;
-	int node_num;
-};
 function_block fbs[20];
 int fb_nums = 0;
 void mark_standard_block(){
@@ -43,18 +12,22 @@ void mark_standard_block(){
 		{
 			fbs[fb_nums].sb_nums = 0;
 			int j;
-			for (j = i; codes[j].opr != "RETURN"; fbs[fb_nums].sb_nums++)
+			for (j = i; codes[j].opr != "RETURN"&&j<code_index; fbs[fb_nums].sb_nums++)
 			{
 				fbs[fb_nums].sbs[fbs[fb_nums].sb_nums].codes_num = 0;
 				fbs[fb_nums].sbs[fbs[fb_nums].sb_nums].codes[fbs[fb_nums].sbs[fbs[fb_nums].sb_nums].codes_num++] = codes[j];
+				if (codes[j].opr == "JMP" || codes[j].opr == "JEQ" || codes[j].opr == "JNE" || codes[j].opr == "JLS" || codes[j].opr == "JLE" || codes[j].opr == "JGR" || codes[j].opr == "JGE")
+				{
+					j++;
+					continue;
+				}
 				int k;
-				for (k = j + 1; codes[k].opr != "LABEL" && codes[k].opr != "RETURN"; k++)
+				for (k = j + 1; codes[k].opr != "LABEL" && codes[k].opr != "RETURN"&&k<code_index; k++)
 				{
 					fbs[fb_nums].sbs[fbs[fb_nums].sb_nums].codes[fbs[fb_nums].sbs[fbs[fb_nums].sb_nums].codes_num++] = codes[k];
 					if (codes[k].opr == "JMP" || codes[k].opr == "JEQ" || codes[k].opr == "JNE" || codes[k].opr == "JLS" || codes[k].opr == "JLE" || codes[k].opr == "JGR" || codes[k].opr == "JGE")
 					{
 						k++;
-
 						break;
 					}
 				}
@@ -75,7 +48,7 @@ void mark_standard_block(){
 				for (int k = 0; k < fbs[fb_nums].sb_nums; k++)
 				{
 					if (fbs[fb_nums].sbs[k].codes[0].opr == "LABEL"
-						&&fbs[fb_nums].sbs[i].codes[fbs[fb_nums].sbs[i].codes_num - 1].des == fbs[fb_nums].sbs[k].codes[0].des
+						&&fbs[fb_nums].sbs[j].codes[fbs[fb_nums].sbs[j].codes_num - 1].des == fbs[fb_nums].sbs[k].codes[0].des
 						&&k != j + 1)
 					{
 						fbs[fb_nums].sbs[j].backward_blocks_num[fbs[fb_nums].sbs[j].bb_num++] = k;
@@ -110,6 +83,7 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 	int nodes_num = 1;
 	bool store_flag = true;//数组的存取的一个标志，连续的两次取操作中间不可以夹杂存操作
 	Stack_node output_stack[100];
+	int take_off_nums_stack[100] = {0};
 	int stack_node_num = 0;
 	for (int i = 0; i < fbs[fb_num].sbs[sb_num].codes_num; i++)
 	{
@@ -120,19 +94,27 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 		{
 			if (fbs[fb_num].sbs[sb_num].codes[i].opr == "ADD" || fbs[fb_num].sbs[sb_num].codes[i].opr == "MUL")
 			{
-				if (dnodes[it->second].text == codes[i].opr)
+				if (dnodes[it->second].text == fbs[fb_num].sbs[sb_num].codes[i].opr)
 				{
-					if ((
+					if (((
 						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num) &&
 						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src2, dnodes[dnodes[it->second].right_child_num].vars, dnodes[dnodes[it->second].right_child_num].vars_num))
 						|| (
 						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].right_child_num].vars, dnodes[dnodes[it->second].right_child_num].vars_num) &&
 						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src2, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num)))
+						&& (vars_map[dnodes[it->second].vars[0]] == it->second || dnodes[it->second].vars[0].at(0) == '%'))
 					{
 						vars_map[fbs[fb_num].sbs[sb_num].codes[i].des] = it->second;
 						node_no = it->second;
 						dnodes[it->second].vars[dnodes[it->second].vars_num++] = fbs[fb_num].sbs[sb_num].codes[i].des;
-//						dnodes[dnodes[it->second].left_child_num].fathers_num++;
+						
+						if (fbs[fb_num].sbs[sb_num].codes[i].des.at(0) != '%'&&!ifin_array(fbs[fb_num].sbs[sb_num].codes[i].des, dnodes[it->second].vars, dnodes[it->second].vars_num-1))
+						{
+							output_stack[stack_node_num].var_name = fbs[fb_num].sbs[sb_num].codes[i].des;
+							output_stack[stack_node_num++].node_num = it->second;
+						}
+
+						//						dnodes[dnodes[it->second].left_child_num].fathers_num++;
 //						dnodes[dnodes[it->second].right_child_num].fathers_num++;
 					}
 				}
@@ -141,14 +123,22 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 			{
 				if (dnodes[it->second].text == fbs[fb_num].sbs[sb_num].codes[i].opr)
 				{
-					if (ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num) &&
-						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src2, dnodes[dnodes[it->second].right_child_num].vars, dnodes[dnodes[it->second].right_child_num].vars_num))
+					if ((ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num) &&
+						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src2, dnodes[dnodes[it->second].right_child_num].vars, dnodes[dnodes[it->second].right_child_num].vars_num)) 
+						&& (vars_map[dnodes[it->second].vars[0]] == it->second || dnodes[it->second].vars[0].at(0) == '%'))
 					{
 						vars_map[fbs[fb_num].sbs[sb_num].codes[i].des] = it->second;
 						node_no = it->second;
 						dnodes[it->second].vars[dnodes[it->second].vars_num++] = fbs[fb_num].sbs[sb_num].codes[i].des;
 //						dnodes[it->second].vars[dnodes[it->second].vars_num++] = codes[i].des;
 //						dnodes[dnodes[it->second].left_child_num].fathers_num++;
+						
+						if (fbs[fb_num].sbs[sb_num].codes[i].des.at(0) != '%'&&!ifin_array(fbs[fb_num].sbs[sb_num].codes[i].des, dnodes[it->second].vars, dnodes[it->second].vars_num - 1))
+						{
+							output_stack[stack_node_num].var_name = fbs[fb_num].sbs[sb_num].codes[i].des;
+							output_stack[stack_node_num++].node_num = it->second;
+						}
+
 					}
 				}
 
@@ -157,12 +147,20 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 			{
 				if (dnodes[it->second].text == fbs[fb_num].sbs[sb_num].codes[i].opr)
 				{
-					if (ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num) &&
-						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src2, dnodes[dnodes[it->second].right_child_num].vars, dnodes[dnodes[it->second].right_child_num].vars_num))
+					if ((ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num) &&
+						ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src2, dnodes[dnodes[it->second].right_child_num].vars, dnodes[dnodes[it->second].right_child_num].vars_num)) && (vars_map[dnodes[it->second].vars[0]] == it->second || dnodes[it->second].vars[0].at(0) == '%'))
 					{
 						vars_map[fbs[fb_num].sbs[sb_num].codes[i].des] = it->second;
 						node_no = it->second;
 						dnodes[it->second].vars[dnodes[it->second].vars_num++] = fbs[fb_num].sbs[sb_num].codes[i].des;
+
+						if (fbs[fb_num].sbs[sb_num].codes[i].des.at(0) != '%')
+						{
+							output_stack[stack_node_num].var_name = fbs[fb_num].sbs[sb_num].codes[i].des;
+							output_stack[stack_node_num++].node_num = it->second;
+						}
+
+
 //						dnodes[dnodes[it->second].left_child_num].fathers_num++;
 //						dnodes[dnodes[it->second].right_child_num].fathers_num++;
 					}
@@ -172,11 +170,18 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 			{
 				if (dnodes[it->second].text == fbs[fb_num].sbs[sb_num].codes[i].opr)
 				{
-					if (ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num))
+					if ((ifin_array(fbs[fb_num].sbs[sb_num].codes[i].src1, dnodes[dnodes[it->second].left_child_num].vars, dnodes[dnodes[it->second].left_child_num].vars_num)) && (vars_map[dnodes[it->second].vars[0]] == it->second || dnodes[it->second].vars[0].at(0) == '%'))
 					{
 						vars_map[fbs[fb_num].sbs[sb_num].codes[i].des] = it->second;
 						node_no = it->second;
 						dnodes[it->second].vars[dnodes[it->second].vars_num++] = fbs[fb_num].sbs[sb_num].codes[i].des;
+
+
+						if (fbs[fb_num].sbs[sb_num].codes[i].des.at(0) != '%')
+						{
+							output_stack[stack_node_num].var_name = fbs[fb_num].sbs[sb_num].codes[i].des;
+							output_stack[stack_node_num++].node_num = it->second;
+						}
 //						dnodes[dnodes[it->second].left_child_num].fathers_num++;
 //						dnodes[dnodes[it->second].right_child_num].fathers_num++;
 					}
@@ -188,7 +193,7 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 			if (fbs[fb_num].sbs[sb_num].codes[i].opr == "ASSIGN")
 			{
 				map<string, int>::iterator it = vars_map.find(fbs[fb_num].sbs[sb_num].codes[i].src1);
-				if (it != vars_map.end())
+				if (it != vars_map.end() && (vars_map[dnodes[it->second].vars[0]] == it->second || dnodes[it->second].vars[0].at(0)=='%'))
 				{
 					left_child_no = it->second;
 	//				dnodes[it->second].fathers_num++;
@@ -213,6 +218,10 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 				*/
 
 				dnodes[left_child_no].vars[dnodes[left_child_no].vars_num++] = fbs[fb_num].sbs[sb_num].codes[i].des;
+				
+				output_stack[stack_node_num].var_name = fbs[fb_num].sbs[sb_num].codes[i].des;
+				output_stack[stack_node_num++].node_num = left_child_no;
+
 				vars_map[fbs[fb_num].sbs[sb_num].codes[i].des] = left_child_no;
 
 			}
@@ -222,7 +231,7 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 				if (fbs[fb_num].sbs[sb_num].codes[i].src1 != "")
 				{
 					map<string, int>::iterator it = vars_map.find(fbs[fb_num].sbs[sb_num].codes[i].src1);
-					if (it != vars_map.end())
+					if (it != vars_map.end() && (vars_map[dnodes[it->second].vars[0]] == it->second || dnodes[it->second].vars[0].at(0) == '%'))
 					{
 						left_child_no = it->second;
 						dnodes[it->second].fathers_num++;
@@ -272,12 +281,16 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 				dnodes[nodes_num].enable = true;
 				dnodes[nodes_num].fathers_num = 0;
 				dnodes[nodes_num].vars[dnodes[nodes_num].vars_num++] = fbs[fb_num].sbs[sb_num].codes[i].des;
+				
+				output_stack[stack_node_num].var_name = fbs[fb_num].sbs[sb_num].codes[i].des;
+				output_stack[stack_node_num++].node_num = nodes_num;
+
 				vars_map[fbs[fb_num].sbs[sb_num].codes[i].des] = nodes_num++;
 			}
 		}
 
 	}
-	for (int remove_num = 1; remove_num != nodes_num;)
+	/*for (int remove_num = 1; remove_num != nodes_num;)
 	{
 		for (int j = nodes_num-1; j > 0; j--)
 		{
@@ -312,8 +325,8 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 				}
 			} while (true);
 		}
-	}
-	for (int i = stack_node_num - 1; i >= 0; i--)
+	}*/
+	for (int i = 0; i < stack_node_num; i++)
 	{
 		/*
 		 if (dnodes[output_stack[i].node_num].left_child_num == 0 && dnodes[output_stack[i].node_num].right_child_num == 0)
@@ -331,11 +344,20 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 		 */
 		if (output_stack[i].var_name != dnodes[output_stack[i].node_num].vars[0])
 		{
-			fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].opr = "ASSIGN";
-			fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[output_stack[i].node_num].vars[0];
-			fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src2 = "";
-			fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num++].des = output_stack[i].var_name;
-		    
+			if (dnodes[output_stack[i].node_num].vars[0] == "@"&&output_stack[i].var_name != dnodes[output_stack[i].node_num].vars[1])
+			{
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].opr = "ASSIGN";
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[output_stack[i].node_num].vars[1];
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src2 = "";
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num++].des = output_stack[i].var_name;
+			}
+			else
+			{
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].opr = "ASSIGN";
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[output_stack[i].node_num].vars[0];
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src2 = "";
+				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num++].des = output_stack[i].var_name;
+			}
 		}
 		else
 		{
@@ -354,14 +376,23 @@ void DAG_sblock_optimize(int fb_num,int sb_num)
 				)
 			{
 				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].opr = dnodes[output_stack[i].node_num].text;
-				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[0];
+				if (dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[0]!="@")
+					fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[0];
+				else
+					fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[1];
+				if (dnodes[dnodes[output_stack[i].node_num].right_child_num].vars[0] != "@")
 				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src2 = dnodes[dnodes[output_stack[i].node_num].right_child_num].vars[0];
+				else
+					fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src2 = dnodes[dnodes[output_stack[i].node_num].right_child_num].vars[1];
 				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num++].des = output_stack[i].var_name;
 			}
 			else if (dnodes[output_stack[i].node_num].text == "OPP")
 			{
 				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].opr = dnodes[output_stack[i].node_num].text;
-				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[0];
+				if (dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[0] != "@")
+					fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[0];
+				else
+					fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src1 = dnodes[dnodes[output_stack[i].node_num].left_child_num].vars[1];
 				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num].src2 = "";
 				fbs[fb_num].sbs[sb_num].new_codes[fbs[fb_num].sbs[sb_num].new_codes_num++].des = output_stack[i].var_name;
 			}
@@ -411,19 +442,21 @@ void DAG_optimize()
 			DAG_sblock_optimize(i, j);
 		}
 	}
-	code_index = 0;
-	for (int i = 0; i < fb_nums; i++)
+	//code_index = 0;
+	for (int i = 0; i < fb_nums-1; i++)
 	{
-		for (int j = 0; j < fbs[i].sb_nums; j++)
+		int j;
+		/*for (j = 0; j < fbs[i].sb_nums; j++)
 		{
 			for (int k = 0; k < fbs[i].sbs[j].new_codes_num; k++)
 			{
 				codes[code_index++] = fbs[i].sbs[j].new_codes[k];
 			}
-		}
-		codes[code_index].opr = "RETURN";
+		}*/
+		fbs[i].sbs[fbs[i].sb_nums - 1].new_codes[fbs[i].sbs[fbs[i].sb_nums - 1].new_codes_num++].opr = "RETURN";
+	/*	codes[code_index].opr = "RETURN";
 		codes[code_index].src1 = "";
 		codes[code_index].src2 = "";
-		codes[code_index++].des = "";
+		codes[code_index++].des = "";*/
 	}
 }

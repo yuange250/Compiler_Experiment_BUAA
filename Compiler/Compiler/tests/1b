@@ -1,6 +1,6 @@
 
 const
-  zero = '0', minus = '-';
+  zero = '0', minus = '8';
 var
   str: array[80] of char;
   sp: integer;

@@ -31,6 +31,7 @@ int label_num = 0;//标签命名，这个应该整个程序唯一。
 int function_num = 1;
 int string_num = 0;
 
+
 string string_pool[100];
 
 string a;
@@ -105,10 +106,12 @@ bool ifin(string symbol, string symbols[]);
 void listcode();
 void generate(string opr, string src1, string src2, string des);
 void generatemips();
+void generatemips_new();
 void list_mips_code();
 void listcode2();
 void DAG_optimize();
 void sight_optimize();
+void active_var_analysis();
 int main(int argc, char**argv)
 {
 	/*
@@ -129,20 +132,26 @@ int main(int argc, char**argv)
 		cout << "yes"<< endl;
 	}
 	*/
-	
-    IN = fopen("lyh.txt", "r");
+	char path[200];
+	scanf("%s", path);
+    IN = fopen(path, "r");
 	init();
 	getsym();
 	block("MAIN",0);
 //	generate("RETURN","","","");
-	printf("Analysis over!");
+	
 	sight_optimize();
-	listcode();
+	
 
-	//DAG_optimize();
+	DAG_optimize();
+	//listcode();
+	active_var_analysis();
 	//listcode2();
-	generatemips();
+	generatemips_new();
+	//generatemips();
+	
 	list_mips_code();
+	printf("Analysis over!");
 	getchar();
 	return 0;
 	

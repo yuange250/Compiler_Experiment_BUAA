@@ -6,7 +6,7 @@ void sight_optimize()
 	{
 		if (codes[i].opr == "ASSIGN")
 		{
-			if (codes[i].src1 == codes[i - 1].des&&codes[i-1].opr!="ASSIGN")
+			if (codes[i].src1 == codes[i - 1].des&&codes[i-1].opr!="ASSIGN"&&codes[i].src1.at(0)=='%')
 			{
 				codes[i - 1].des = codes[i].des;
 				for (int j = i; j < code_index; j++)

@@ -69,3 +69,45 @@ extern int ln;//linenum
 extern int function_num;
 extern int string_num;
 extern string string_pool[100];
+struct standard_block{
+	int fb_num;
+	int forward_blocks_num[10];
+	int bb_num;
+	int backward_blocks_num[10];
+	int codes_num;
+	code codes[50];
+	code codes_after_optmize[50];
+	int new_codes_num;
+	code new_codes[50];
+	string def[20];
+	int def_num;
+	string use[20];
+	int use_num;
+	string in[20];
+	int in_num;
+	string out[20];
+	int out_num;
+};
+struct function_block
+{
+	standard_block sbs[50];
+	int sb_nums;
+	map<string,int> global_rigisters;
+	string registers[8];
+};
+struct DAG_node{
+	string text;
+	string vars[20];
+	int vars_num;
+	int fathers_num;
+	int left_child_num;
+	int right_child_num;
+	bool enable;
+};
+struct Stack_node
+{
+	string var_name;
+	int node_num;
+};
+extern function_block fbs[20];
+extern int fb_nums;

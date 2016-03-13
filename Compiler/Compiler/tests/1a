@@ -1,7 +1,7 @@
 const
   zero = '0', minus = '9';
 var
-  str: array[80] of char;
+  str: array[800] of char;
   sp: integer;
   a, b: integer;
   ans: integer;
@@ -53,6 +53,7 @@ begin
   read(a,b);
   ans := gcd(a,b);
   write("gcd(a,b)=", ans);
+  write("  ");
   tostr(ans);
-  printstr;
+  printstr();
 end.

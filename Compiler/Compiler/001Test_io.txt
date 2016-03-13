@@ -1,8 +1,0 @@
-var
-i:integer;
-begin
-	read(i);
-   write(" dfasdfa ",i);
-   write(" sdasds ");
-   write(i+i)
-end.

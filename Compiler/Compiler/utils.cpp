@@ -152,6 +152,8 @@ int find_func_proc_position(string label)
 int get_the_variable(int posi,string name)
 {
 	//一层层地向外跳着找变量，很笨的办法。
+	if (id_table[posi].obj == "function" && name == id_table[posi].name)
+		return posi;
 	for (int j = posi,level=id_table[posi].lev+1; id_table[j].obj == "procedure" || id_table[j].obj == "function";)
 	{
 		for (int i = j+1; i <= tx && (id_table[i].obj == "var" || id_table[i].obj == "const"); i++)
